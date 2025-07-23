@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model Usuario {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  email     String   @unique
+  senha     String
+  pedidos   Pedido[]
+  criadoEm  DateTime @default(now())
+}
+
+model Produto {
+  id          Int      @id @default(autoincrement())
+  nome        String
+  descricao   String
+  preco       Float
+  imagemUrl   String
+  categoria   Categoria @relation(fields: [categoriaId], references: [id])
+  categoriaId Int
+  criadoEm    DateTime  @default(now())
+  pedidos     Pedido[]  // Added to establish many-to-many relation with Pedido
+  peso        Int?   
+}
+
+model Categoria {
+  id       Int        @id @default(autoincrement())
+  nome     String
+  produtos Produto[]
+}
+
+model Pedido {
+  id         Int       @id @default(autoincrement())
+  usuario    Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId  Int
+  produtos   Produto[]
+  total      Float
+  status     String
+  criadoEm   DateTime  @default(now())
+}

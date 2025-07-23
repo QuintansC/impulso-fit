@@ -1,0 +1,29 @@
+[
+  {
+    "id": 1,
+    "nome": "Café Tradicional 500g",
+    "descricao": "Café moído tradicional com sabor marcante.",
+    "preco": 14.90,
+    "imagem": "/images/cafe-tradicional.jpg",
+    "categoriaId": 1,
+    "peso": 500
+  },
+  {
+    "id": 2,
+    "nome": "Café Extra Forte 500g",
+    "descricao": "Ideal para quem gosta de um café mais encorpado.",
+    "preco": 16.50,
+    "imagem": "/images/cafe-extra-forte.jpg",
+    "categoriaId": 1,
+    "peso": 500
+  },
+  {
+    "id": 3,
+    "nome": "Café Premium 250g",
+    "descricao": "Café de alta qualidade com torra especial.",
+    "preco": 18.00,
+    "imagem": "/images/cafe-premium.jpg",
+    "categoriaId": 2,
+    "peso": 250
+  }
+]

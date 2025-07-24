@@ -9,7 +9,7 @@ const prisma = new PrismaClient();
 async function main() {
   console.log('🌱 Iniciando seed...');
 
-  // Popula categorias
+  // Popula categorias e subcategorias
   for (const categoria of categorias) {
     await prisma.categoria.upsert({
       where: { id: categoria.id },
@@ -19,9 +19,24 @@ async function main() {
         nome: categoria.nome,
       },
     });
+
+    // Popula subcategorias se existirem
+    if (categoria.subcategorias && categoria.subcategorias.length > 0) {
+      for (const sub of categoria.subcategorias) {
+        await prisma.subcategoria.upsert({
+          where: { id: sub.id },
+          update: {},
+          create: {
+            id: sub.id,
+            nome: sub.nome,
+            categoriaId: categoria.id,
+          },
+        });
+      }
+    }
   }
 
-  // Popula produtos
+  // Popula produtos (ajuste se quiser relacionar com subcategoria)
   for (const produto of produtos) {
     await prisma.produto.upsert({
       where: { id: produto.id },
@@ -33,6 +48,7 @@ async function main() {
         imagemUrl: produto.imagem,
         categoriaId: produto.categoriaId,
         peso: produto.peso,
+        // subcategoriaId: produto.subcategoriaId, // se quiser usar
       },
     });
   }

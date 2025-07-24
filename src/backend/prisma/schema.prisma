@@ -31,8 +31,16 @@ model Produto {
 
 model Categoria {
   id       Int        @id @default(autoincrement())
-  nome     String
-  produtos Produto[]
+  nome           String
+  subcategorias  Subcategoria[]
+  produtos       Produto[]
+}
+
+model Subcategoria {
+  id           Int      @id
+  nome         String
+  categoria    Categoria @relation(fields: [categoriaId], references: [id])
+  categoriaId  Int
 }
 
 model Pedido {

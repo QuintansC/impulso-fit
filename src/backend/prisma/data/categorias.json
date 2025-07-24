@@ -1,22 +1,73 @@
 [
   {
     "id": 1,
-    "nome": "Tradicional"
+    "nome": "Café Torrado em Grãos",
+    "subcategorias": [
+      { "id": 101, "nome": "Tradicional" },
+      { "id": 102, "nome": "Gourmet" },
+      { "id": 103, "nome": "Premium" },
+      { "id": 104, "nome": "Orgânico" }
+    ]
   },
   {
     "id": 2,
-    "nome": "Premium"
+    "nome": "Café Torrado em Pó",
+    "subcategorias": [
+      { "id": 201, "nome": "Tradicional" },
+      { "id": 202, "nome": "Gourmet" },
+      { "id": 203, "nome": "Premium" },
+      { "id": 204, "nome": "Orgânico" }
+    ]
   },
   {
     "id": 3,
-    "nome": "Descafeinado"
+    "nome": "Cápsulas de Café",
+    "subcategorias": [
+      { "id": 301, "nome": "Gourmet" },
+      { "id": 302, "nome": "Leggero" },
+      { "id": 303, "nome": "Ristretto" },
+      { "id": 304, "nome": "Espresso" }
+    ]
   },
   {
     "id": 4,
-    "nome": "Cápsulas"
+    "nome": "Cappuccinos",
+    "subcategorias": [
+      { "id": 401, "nome": "Chocolate" },
+      { "id": 402, "nome": "Tradicional" }
+    ]
   },
   {
     "id": 5,
-    "nome": "Solúvel"
+    "nome": "Café Solúvel",
+    "subcategorias": [
+      { "id": 501, "nome": "Tradicional" }
+    ]
+  },
+  {
+    "id": 6,
+    "nome": "Acessórios para Café",
+    "subcategorias": [
+      { "id": 601, "nome": "Xícaras" },
+      { "id": 602, "nome": "Filtros" },
+      { "id": 603, "nome": "Colheres" }
+    ]
+  },
+  {
+    "id": 7,
+    "nome": "Kits Especiais",
+    "subcategorias": [
+      { "id": 701, "nome": "Kit Café" },
+      { "id": 702, "nome": "Kit Cápsulas" },
+      { "id": 703, "nome": "Kit Cappuccino" }
+    ]
+  },
+  {
+    "id": 8,
+    "nome": "Máquinas de Café",
+    "subcategorias": [
+      { "id": 801, "nome": "Espresso" },
+      { "id": 802, "nome": "Cápsulas" }
+    ]
   }
 ]

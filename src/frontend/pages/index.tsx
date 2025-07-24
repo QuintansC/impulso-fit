@@ -1,3 +1,4 @@
+import Head from 'next/head';
 import { useEffect, useState } from 'react';
 import { Produto } from '@/types';
 import { getProdutos } from '@/lib/api';
@@ -29,10 +30,26 @@ export default function Home() {
 
   return (
     <>
+      <Head>
+        <title>Café América | O melhor café do Brasil</title>
+        <meta name="description" content="Compre cafés, cápsulas, acessórios e kits especiais na Café América. Tradição e qualidade em cada xícara. Frete grátis para Sul e Sudeste acima de R$250." />
+        <meta property="og:title" content="Café América | O melhor café do Brasil" />
+        <meta property="og:description" content="Compre cafés, cápsulas, acessórios e kits especiais na Café América. Tradição e qualidade em cada xícara." />
+        <meta property="og:image" content="/logo.jpg" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Café América | O melhor café do Brasil" />
+        <meta name="twitter:description" content="Compre cafés, cápsulas, acessórios e kits especiais na Café América. Tradição e qualidade em cada xícara." />
+        <meta name="twitter:image" content="/logo.jpg" />
+        <link rel="canonical" href="https://cafe-america-clone-production.up.railway.app/" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
       <Header />
 
-      {/* Carrossel de banners */}
+      {/* Use <h1> para o título principal */}
       <section className="w-full bg-gray-100 flex justify-center items-center">
+        <h1 className="sr-only">Café América - O melhor café do Brasil</h1>
+        {/* Carrossel de banners */}
         <div className="relative w-full max-w-7xl h-56 md:h-96 overflow-hidden rounded-none shadow mb-8">
           {banners.map((banner, idx) => (
             <img
@@ -128,14 +145,16 @@ export default function Home() {
       </section>     
 
     
-      {/* Produtos em destaque */}
+      {/* Categorias em destaque */}
       <section className="w-full bg-gray-50 py-10">
-        <div className="max-w-7xl mx-auto px-4">
-          <h2 className="text-2xl font-semibold text-gray-500 mb-8">Categorias em destaque</h2>
-          <div className="flex flex-wrap justify-center gap-8">
+        <div className="max-w-7xl mx-auto px-2 md:px-4">
+          <h2 className="text-lg md:text-2xl font-semibold text-gray-500 mb-6 md:mb-8 text-center md:text-left">
+            Categorias em destaque
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap justify-center gap-4 md:gap-8">
             {/* Categoria 1 */}
             <div className="flex flex-col items-center group cursor-pointer transition-all">
-              <div className="w-40 h-40 rounded-full bg-[#ecd8bb] flex items-center justify-center mb-3 shadow transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
+              <div className="w-20 h-20 md:w-40 md:h-40 rounded-full bg-[#ecd8bb] flex items-center justify-center mb-2 md:mb-3 shadow transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
                 {/* Xícara de café */}
                 <svg width="72" height="72" fill="none" stroke="#4e2e0e" strokeWidth="2.5" viewBox="0 0 72 72">
                   <ellipse cx="36" cy="50" rx="22" ry="6" />
@@ -145,11 +164,13 @@ export default function Home() {
                   <path d="M40 26c-2-2-2-6 0-8" />
                 </svg>
               </div>
-              <span className="mt-1 text-base font-bold text-[#4e2e0e] group-hover:underline group-hover:text-[#4e2e0e] transition">Café Torrado em Grãos</span>
+              <span className="mt-1 text-xs md:text-base font-bold text-[#4e2e0e] group-hover:underline group-hover:text-[#4e2e0e] transition text-center">
+                Café Torrado em Grãos
+              </span>
             </div>
             {/* Categoria 2 */}
             <div className="flex flex-col items-center group cursor-pointer transition-all">
-              <div className="w-40 h-40 rounded-full bg-[#ecd8bb] flex items-center justify-center mb-3 shadow transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
+              <div className="w-20 h-20 md:w-40 md:h-40 rounded-full bg-[#ecd8bb] flex items-center justify-center mb-2 md:mb-3 shadow transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
                 {/* Moedor */}
                 <svg width="72" height="72" fill="none" stroke="#4e2e0e" strokeWidth="2.5" viewBox="0 0 72 72">
                   <rect x="18" y="38" width="36" height="14" rx="3" />
@@ -158,11 +179,13 @@ export default function Home() {
                   <circle cx="36" cy="18" r="2" fill="#4e2e0e" />
                 </svg>
               </div>
-              <span className="mt-1 text-base font-semibold text-gray-500 group-hover:text-[#4e2e0e] group-hover:font-bold transition">Café Torrado em Pó</span>
+              <span className="mt-1 text-xs md:text-base font-bold text-[#4e2e0e] group-hover:underline group-hover:text-[#4e2e0e] transition text-center">
+                Café Torrado em Pó
+              </span>
             </div>
             {/* Categoria 3 */}
             <div className="flex flex-col items-center group cursor-pointer transition-all">
-              <div className="w-40 h-40 rounded-full bg-[#ecd8bb] flex items-center justify-center mb-3 shadow transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
+              <div className="w-20 h-20 md:w-40 md:h-40 rounded-full bg-[#ecd8bb] flex items-center justify-center mb-2 md:mb-3 shadow transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
                 {/* Cápsula */}
                 <svg width="72" height="72" fill="none" stroke="#4e2e0e" strokeWidth="2.5" viewBox="0 0 72 72">
                   <ellipse cx="36" cy="44" rx="16" ry="8" />
@@ -170,11 +193,13 @@ export default function Home() {
                   <ellipse cx="36" cy="32" rx="8" ry="4" />
                 </svg>
               </div>
-              <span className="mt-1 text-base font-semibold text-gray-500 group-hover:text-[#4e2e0e] group-hover:font-bold transition">Cápsulas de Café</span>
+              <span className="mt-1 text-xs md:text-base font-bold text-[#4e2e0e] group-hover:underline group-hover:text-[#4e2e0e] transition text-center">
+                Cápsulas de Café
+              </span>
             </div>
             {/* Categoria 4 */}
             <div className="flex flex-col items-center group cursor-pointer transition-all">
-              <div className="w-40 h-40 rounded-full bg-[#ecd8bb] flex items-center justify-center mb-3 shadow transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
+              <div className="w-20 h-20 md:w-40 md:h-40 rounded-full bg-[#ecd8bb] flex items-center justify-center mb-2 md:mb-3 shadow transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
                 {/* Cappuccino */}
                 <svg width="72" height="72" fill="none" stroke="#4e2e0e" strokeWidth="2.5" viewBox="0 0 72 72">
                   <ellipse cx="36" cy="50" rx="22" ry="6" />
@@ -183,11 +208,13 @@ export default function Home() {
                   <path d="M36 32c0-4 8-8 8-12" />
                 </svg>
               </div>
-              <span className="mt-1 text-base font-semibold text-gray-500 group-hover:text-[#4e2e0e] group-hover:font-bold transition">Cappuccinos</span>
+              <span className="mt-1 text-xs md:text-base font-bold text-[#4e2e0e] group-hover:underline group-hover:text-[#4e2e0e] transition text-center">
+                Cappuccinos
+              </span>
             </div>
             {/* Categoria 5 */}
             <div className="flex flex-col items-center group cursor-pointer transition-all">
-              <div className="w-40 h-40 rounded-full bg-[#ecd8bb] flex items-center justify-center mb-3 shadow transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
+              <div className="w-20 h-20 md:w-40 md:h-40 rounded-full bg-[#ecd8bb] flex items-center justify-center mb-2 md:mb-3 shadow transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
                 {/* Solúvel */}
                 <svg width="72" height="72" fill="none" stroke="#4e2e0e" strokeWidth="2.5" viewBox="0 0 72 72">
                   <ellipse cx="36" cy="50" rx="22" ry="6" />
@@ -197,11 +224,13 @@ export default function Home() {
                   <path d="M36 36v8" />
                 </svg>
               </div>
-              <span className="mt-1 text-base font-semibold text-gray-500 group-hover:text-[#4e2e0e] group-hover:font-bold transition">Café Solúvel</span>
+              <span className="mt-1 text-xs md:text-base font-bold text-[#4e2e0e] group-hover:underline group-hover:text-[#4e2e0e] transition text-center">
+                Café Solúvel
+              </span>
             </div>
             {/* Categoria 6 */}
             <div className="flex flex-col items-center group cursor-pointer transition-all">
-              <div className="w-40 h-40 rounded-full bg-[#ecd8bb] flex items-center justify-center mb-3 shadow transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
+              <div className="w-20 h-20 md:w-40 md:h-40 rounded-full bg-[#ecd8bb] flex items-center justify-center mb-2 md:mb-3 shadow transition-transform duration-300 group-hover:scale-105 group-active:scale-95">
                 {/* Presente */}
                 <svg width="72" height="72" fill="none" stroke="#4e2e0e" strokeWidth="2.5" viewBox="0 0 72 72">
                   <rect x="18" y="32" width="36" height="18" rx="4" />
@@ -210,7 +239,9 @@ export default function Home() {
                   <path d="M44 32c0-4-8-8-8-12" />
                 </svg>
               </div>
-              <span className="mt-1 text-base font-semibold text-gray-500 group-hover:text-[#4e2e0e] group-hover:font-bold transition">Acessórios para Café</span>
+              <span className="mt-1 text-xs md:text-base font-bold text-[#4e2e0e] group-hover:underline group-hover:text-[#4e2e0e] transition text-center">
+                Acessórios para Café
+              </span>
             </div>
           </div>
         </div>
@@ -228,7 +259,7 @@ export default function Home() {
       {/* Seção de todos os produtos */}
       <section className="max-w-7xl mx-auto px-4 mb-10">
         <h2 className="text-xl font-bold mb-4 text-gray-800">Todos os Produtos</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap gap-6">
           {produtos.map(prod => (
             <ProdutoCard key={prod.id} produto={prod} />
           ))}

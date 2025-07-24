@@ -1,11 +1,12 @@
 import Link from 'next/link';
-import { ShoppingCart, User, Heart, Menu } from 'lucide-react';
+import { ShoppingCart, User, Heart, Menu, X } from 'lucide-react';
 import { useCarrinho } from '@/context/CarrinhoContext';
 import { useState } from 'react';
 
 export default function Header() {
   const { carrinho } = useCarrinho();
   const [open, setOpen] = useState(false);
+  const [mobileMenu, setMobileMenu] = useState(false);
 
   return (
     <header className="bg-white border-b border-gray-200 shadow">
@@ -16,17 +17,17 @@ export default function Header() {
           <img src="/logo.jpg" alt="Café América" className="h-14 md:h-16" />
           <span className="font-bold text-2xl text-gray-800 hidden md:inline">Café América</span>
         </Link>
-        {/* Busca */}
-        <div className="flex-1 flex justify-center my-2 md:my-0">
+        {/* Busca (esconde no mobile) */}
+        <div className="flex-1 flex justify-center my-2 md:my-0 w-full md:w-auto">
           <input
             type="text"
             placeholder="O que você procura?"
-            className="w-full max-w-md px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 bg-white"
+            className="w-full max-w-md px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 bg-white hidden sm:block"
           />
         </div>
-        {/* Ícones à direita */}
-        <div className="flex items-center space-x-6">
-          <Link href="#" className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
+        {/* Ícones à direita (desktop) */}
+        <div className="items-center space-x-6 hidden md:flex">
+          <Link href="/login" className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
             <User size={24} />
             <span className="hidden md:inline font-semibold">Entrar</span>
           </Link>
@@ -42,16 +43,23 @@ export default function Header() {
             <span className="ml-2 text-gray-800 font-semibold hidden md:inline">Carrinho</span>
           </Link>
         </div>
+        {/* Botão menu mobile */}
+        <button
+          className="md:hidden ml-auto text-gray-700"
+          onClick={() => setMobileMenu(true)}
+          aria-label="Abrir menu"
+        >
+          <Menu size={28} />
+        </button>
       </div>
 
-      {/* Todos os Departamentos com submenu */}
-      <div className="bg-white border-b border-gray-200">
+      {/* Todos os Departamentos com submenu (desktop) */}
+      <div className="bg-white border-b border-gray-200 hidden md:block">
         <div className="max-w-7xl mx-auto flex items-center px-4 py-2 space-x-4 relative">
           <div
             className="flex items-center gap-2 text-gray-800 font-semibold hover:text-gray-900 cursor-pointer select-none relative"
             onMouseEnter={() => setOpen(true)}
             onMouseLeave={() => setOpen(false)}
-            onClick={() => setOpen((v) => !v)}
             tabIndex={0}
           >
             <Menu size={20} />
@@ -71,13 +79,66 @@ export default function Header() {
               </div>
             )}
           </div>
-          {/* Categorias rápidas ao lado, se quiser manter */}
           <Link href="#" className="text-gray-700 hover:text-gray-900 text-sm">Cafés</Link>
           <Link href="#" className="text-gray-700 hover:text-gray-900 text-sm">Capsulas</Link>
           <Link href="#" className="text-gray-700 hover:text-gray-900 text-sm">Acessórios</Link>
           <Link href="#" className="text-gray-700 hover:text-gray-900 text-sm">Promoções</Link>
         </div>
       </div>
+
+      {/* Drawer Mobile */}
+      {mobileMenu && (
+        <div className="fixed inset-0 z-40 flex">
+          {/* Fundo escuro */}
+          <div
+            className="fixed inset-0 bg-black bg-opacity-30"
+            onClick={() => setMobileMenu(false)}
+          />
+          {/* Menu lateral */}
+          <nav className="relative bg-white w-72 max-w-full h-full shadow-lg z-50 p-6 flex flex-col">
+            <button
+              className="absolute top-4 right-4 text-gray-700"
+              onClick={() => setMobileMenu(false)}
+              aria-label="Fechar menu"
+            >
+              <X size={28} />
+            </button>
+            <Link href="/" className="flex items-center space-x-2 mb-8" onClick={() => setMobileMenu(false)}>
+              <img src="/logo.jpg" alt="Café América" className="h-12" />
+              <span className="font-bold text-xl text-gray-800">Café América</span>
+            </Link>
+            <input
+              type="text"
+              placeholder="O que você procura?"
+              className="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-gray-400 bg-white mb-6"
+            />
+            <Link href="/login" className="flex items-center gap-2 text-gray-700 hover:text-gray-900 py-2" onClick={() => setMobileMenu(false)}>
+              <User size={22} />
+              <span className="font-semibold">Entrar</span>
+            </Link>
+            <Link href="#" className="flex items-center gap-2 text-gray-700 hover:text-gray-900 py-2" onClick={() => setMobileMenu(false)}>
+              <Heart size={22} />
+              <span className="font-semibold">Favoritos</span>
+            </Link>
+            <Link href="/carrinho" className="flex items-center gap-2 text-gray-700 hover:text-gray-900 py-2" onClick={() => setMobileMenu(false)}>
+              <ShoppingCart size={22} />
+              <span className="font-semibold">Carrinho</span>
+              {carrinho.length > 0 && (
+                <span className="ml-2 text-xs bg-gray-800 text-white rounded-full px-2 py-0.5 font-bold">
+                  {carrinho.length}
+                </span>
+              )}
+            </Link>
+            <hr className="my-4" />
+            <span className="text-gray-500 font-semibold mb-2">Departamentos</span>
+            <Link href="#" className="block py-2 text-gray-700 hover:text-gray-900" onClick={() => setMobileMenu(false)}>Cafés Tradicionais</Link>
+            <Link href="#" className="block py-2 text-gray-700 hover:text-gray-900" onClick={() => setMobileMenu(false)}>Cafés Especiais</Link>
+            <Link href="#" className="block py-2 text-gray-700 hover:text-gray-900" onClick={() => setMobileMenu(false)}>Cápsulas</Link>
+            <Link href="#" className="block py-2 text-gray-700 hover:text-gray-900" onClick={() => setMobileMenu(false)}>Acessórios</Link>
+            <Link href="#" className="block py-2 text-gray-700 hover:text-gray-900" onClick={() => setMobileMenu(false)}>Promoções</Link>
+          </nav>
+        </div>
+      )}
     </header>
   );
 }

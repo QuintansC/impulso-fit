@@ -15,3 +15,5 @@ src/frontend/dist
 src/backend/dist
 
 src/backend/.env
+
+src/frontend/.next

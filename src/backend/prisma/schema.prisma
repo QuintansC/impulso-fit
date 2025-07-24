@@ -3,8 +3,8 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
 
 model Usuario {
@@ -25,7 +25,7 @@ model Produto {
   categoria   Categoria @relation(fields: [categoriaId], references: [id])
   categoriaId Int
   criadoEm    DateTime  @default(now())
-  pedidos     Pedido[]  // Added to establish many-to-many relation with Pedido
+  pedidos     PedidoProduto[]
   peso        Int?   
 }
 
@@ -39,8 +39,17 @@ model Pedido {
   id         Int       @id @default(autoincrement())
   usuario    Usuario   @relation(fields: [usuarioId], references: [id])
   usuarioId  Int
-  produtos   Produto[]
+  produtos   PedidoProduto[]
   total      Float
   status     String
   criadoEm   DateTime  @default(now())
+}
+
+model PedidoProduto {
+  pedidoId  Int
+  produtoId Int
+  pedido    Pedido  @relation(fields: [pedidoId], references: [id])
+  produto   Produto @relation(fields: [produtoId], references: [id])
+
+  @@id([pedidoId, produtoId])
 }

@@ -13,3 +13,5 @@ src/backend/node_modules
 src/frontend/dist
 
 src/backend/dist
+
+src/backend/.env

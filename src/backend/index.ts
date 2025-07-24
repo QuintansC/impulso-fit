@@ -5,7 +5,7 @@ import categoriasRouter from './routes/categorias';
 
 const app = express();
 app.use(cors({
-  origin: process.env.URL_FRONTEND || 'http://localhost:3000',
+  origin: process.env.URL_FRONTEND,
   credentials: true
 }));
 app.use(express.json());

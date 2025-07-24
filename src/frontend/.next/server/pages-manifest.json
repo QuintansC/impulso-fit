@@ -1,6 +1,1 @@
-{
-  "/_app": "pages/_app.js",
-  "/_error": "pages/_error.js",
-  "/_document": "pages/_document.js",
-  "/": "pages/index.js"
-}
+{"/_app":"pages/_app.js","/carrinho":"pages/carrinho.html","/produtos":"pages/produtos.html","/":"pages/index.html","/checkout":"pages/checkout.html","/_error":"pages/_error.js","/produto/[slug]":"pages/produto/[slug].js","/_document":"pages/_document.js","/404":"pages/404.html"}

@@ -58,25 +58,36 @@ export default function Home() {
               alt={banner.alt}
               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ${idx === bannerIdx ? 'opacity-100' : 'opacity-0'}`}
               style={{ zIndex: idx === bannerIdx ? 1 : 0 }}
+              draggable={false}
             />
           ))}
           {/* Botões do carrossel */}
           <button
-            className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 shadow hover:bg-white"
-            onClick={() => setBannerIdx((bannerIdx - 1 + banners.length) % banners.length)}
+            className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 shadow hover:bg-white z-10"
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              setBannerIdx((bannerIdx - 1 + banners.length) % banners.length);
+            }}
+            tabIndex={0}
             aria-label="Anterior"
           >
             ‹
           </button>
           <button
-            className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 shadow hover:bg-white"
-            onClick={() => setBannerIdx((bannerIdx + 1) % banners.length)}
+            className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 rounded-full p-2 shadow hover:bg-white z-10"
+            onClick={e => {
+              e.preventDefault();
+              e.stopPropagation();
+              setBannerIdx((bannerIdx + 1) % banners.length);
+            }}
+            tabIndex={0}
             aria-label="Próximo"
           >
             ›
           </button>
           {/* Indicadores */}
-          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2">
+          <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-2 z-10">
             {banners.map((_, idx) => (
               <span
                 key={idx}

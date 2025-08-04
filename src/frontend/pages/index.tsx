@@ -260,7 +260,7 @@ export default function Home() {
       {/* Seção de destaques */}
       <section className="max-w-7xl mx-auto px-4 mb-10">
         <h2 className="text-xl font-bold mb-4 text-gray-800">Destaques</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {produtos.slice(0, 3).map(prod => (
             <ProdutoCard key={prod.id} produto={prod} />
           ))}
@@ -270,7 +270,7 @@ export default function Home() {
       {/* Seção de todos os produtos */}
       <section className="max-w-7xl mx-auto px-4 mb-10">
         <h2 className="text-xl font-bold mb-4 text-gray-800">Todos os Produtos</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:flex md:flex-wrap gap-6">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-6">
           {produtos.map(prod => (
             <ProdutoCard key={prod.id} produto={prod} />
           ))}

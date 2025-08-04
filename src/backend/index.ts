@@ -5,7 +5,10 @@ import categoriasRouter from './routes/categorias';
 
 const app = express();
 app.use(cors({
-  origin: process.env.URL_FRONTEND,
+  origin: [
+    'http://localhost:3000',
+    'https://cafe-america.up.railway.app'
+  ],
   credentials: true
 }));
 app.use(express.json());

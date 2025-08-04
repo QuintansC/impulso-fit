@@ -37,7 +37,7 @@ export default function ProdutoDetalhePage({ produto }: props) {
           {/* Imagem do produto */}
           <div className="flex flex-col items-center">
             <img
-              src={produto.imagem || '/cafe1.jpg'}
+              src={process.env.NEXT_PUBLIC_URL_FRONTEND +'/'+ produto.imagemUrl || '/cafe1.jpg'}
               alt={produto.nome}
               className="w-full max-w-xs h-auto rounded-xl shadow mb-4"
             />

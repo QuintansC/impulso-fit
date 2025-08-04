@@ -1,29 +1,42 @@
 [
   {
     "id": 1,
-    "nome": "Café Tradicional 500g",
-    "descricao": "Café moído tradicional com sabor marcante.",
-    "preco": 14.90,
-    "imagem": "/images/cafe-tradicional.jpg",
-    "categoriaId": 1,
+    "nome": "Cápsulas de Café Leggero - Caixa com 100 Unidades",
+    "descricao": "Ideal para quem ama café",
+    "preco": 223.10,
+    "imagem": "cafe100un.jpg",
+    "categoriaId": 3,
+    "subcategorias": 302,
     "peso": 500
   },
   {
     "id": 2,
-    "nome": "Café Extra Forte 500g",
-    "descricao": "Ideal para quem gosta de um café mais encorpado.",
-    "preco": 16.50,
-    "imagem": "/images/cafe-extra-forte.jpg",
+    "nome": "Cápsulas de Café Leggero - Caixa com 10 Unidades",
+    "descricao": "Ideal para quem ama café e não pode ficar sem",
+    "preco": 14.90,
+    "imagem": "cafe2.jpg",
     "categoriaId": 1,
+    "subcategorias": 302,
+    "peso": 550
+  },
+  {
+    "id": 3,
+    "nome": "Café torrado em Grãos Premium 500g",
+    "descricao": "Café de alta qualidade com torra especial.",
+    "preco": 54.50,
+    "imagem": "https://images.cws.digital/produtos/m/75/71/cafe-torrado-em-grao-premium-500g-10307175-1725647980571.jpg",
+    "categoriaId": 1,
+    "subcategorias": 103,
     "peso": 500
   },
   {
     "id": 3,
-    "nome": "Café Premium 250g",
+    "nome": "Café torrado em Grãos Premium 500g",
     "descricao": "Café de alta qualidade com torra especial.",
-    "preco": 18.00,
-    "imagem": "/images/cafe-premium.jpg",
-    "categoriaId": 2,
-    "peso": 250
+    "preco": 54.50,
+    "imagem": "cafe1.jpg",
+    "categoriaId": 1,
+    "subcategorias": 103,
+    "peso": 500
   }
 ]

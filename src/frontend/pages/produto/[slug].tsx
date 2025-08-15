@@ -13,7 +13,7 @@ type props = {
 
 export default function ProdutoDetalhePage({ produto }: props) {
   const [quantidade, setQuantidade] = useState(1);
-  const { adicionarProdutoQuantidade } = useCarrinho();
+  const { adicionarProdutoCompleto } = useCarrinho();
   if (!produto) {
     return (
       <>
@@ -74,7 +74,10 @@ export default function ProdutoDetalhePage({ produto }: props) {
             </div>
 
             {/* Botão de compra */}
-            <button onClick={()=>{ adicionarProdutoQuantidade(produto.id, quantidade) }} className="bg-yellow-800 text-white px-6 py-3 rounded hover:bg-yellow-900 transition w-full font-semibold mb-4">
+            <button 
+              onClick={() => { adicionarProdutoCompleto(produto, quantidade) }} 
+              className="bg-yellow-800 text-white px-6 py-3 rounded hover:bg-yellow-900 transition w-full font-semibold mb-4"
+            >
               Adicionar ao carrinho
             </button>
 

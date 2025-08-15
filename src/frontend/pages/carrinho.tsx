@@ -15,20 +15,13 @@ export default function CarrinhoPage() {
     getProdutos().then(setProdutos);
   }, []); 
 
-  useEffect(() => {
-    // console.log('Produtos carregados:', produtos);
-    // console.log('Carrinho:', carrinho.length);
-    // console.log(getProduto(1))
-  }, [produtos, carrinho]); 
-
   const getProduto = (id: string) => {
     return produtos.find(p => p.id === id);
   }
 
   const total = carrinho.reduce((acc, item) => {
-    console.log(`Esse é o id do item: ${acc}`);
-    const produto = getProduto(item.id);
-    return acc + (produto ? produto.preco * item.quantidade : 0);
+    // Agora o item já tem o preço, não precisa buscar
+    return acc + (item.preco * item.quantidade);
   }, 0);
 
   return (
@@ -42,8 +35,17 @@ export default function CarrinhoPage() {
           <>
             <div className="space-y-4">
               {carrinho.map((item: any) => {
-                const produto = getProduto(item.id);
-                if (!produto) return null;
+                // Agora podemos usar diretamente o item do carrinho
+                const produto = {
+                  id: item.id,
+                  nome: item.nome,
+                  preco: item.preco,
+                  imagemUrl: item.imagemUrl,
+                  descricao: item.descricao,
+                  categoriaId: 1, // Valor padrão para compatibilidade
+                  criadoEm: new Date().toISOString() // Valor padrão
+                };
+                
                 return (
                   <CartItem
                     key={item.id}

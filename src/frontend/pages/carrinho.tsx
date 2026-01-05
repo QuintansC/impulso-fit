@@ -27,10 +27,15 @@ export default function CarrinhoPage() {
   return (
     <>
       <Header />
-      <section className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-2xl font-bold mb-4">Seu Carrinho</h1>
+      <section className="max-w-4xl mx-auto px-4 py-12 min-h-screen">
+        <div className="mb-8">
+          <h1 className="font-display text-4xl font-bold mb-2">
+            Seu <span className="text-gradient">Carrinho</span>
+          </h1>
+          <p className="text-gray-500">Revise seus produtos antes de finalizar</p>
+        </div>
         {carrinho.length === 0 ? (
-          <p className="text-gray-500">Seu carrinho está vazio.</p>
+          <p className="text-gray-400">Seu carrinho está vazio.</p>
         ) : (
           <>
             <div className="space-y-4">
@@ -56,16 +61,21 @@ export default function CarrinhoPage() {
                 );
               })}
             </div>
-            <div className="mt-6 flex justify-between items-center">
-              <span className="font-semibold text-lg">
-                Total: R$ {total.toFixed(2)}
-              </span>
-              <Link
-                href="/checkout"
-                className="bg-yellow-800 text-white px-6 py-2 rounded hover:bg-yellow-900"
-              >
-                Finalizar Compra
-              </Link>
+            <div className="mt-8 p-6 card-fitness rounded-xl">
+              <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+                <div>
+                  <span className="text-gray-500 text-sm">Total</span>
+                  <div className="font-display font-bold text-3xl text-gradient">
+                    R$ {total.toFixed(2)}
+                  </div>
+                </div>
+                <Link
+                  href="/checkout"
+                  className="btn-primary text-white px-8 py-4 rounded-lg font-semibold text-lg w-full sm:w-auto text-center"
+                >
+                  Finalizar Compra →
+                </Link>
+              </div>
             </div>
           </>
         )}

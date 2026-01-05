@@ -1,42 +1,202 @@
 [
   {
     "id": 1,
-    "nome": "Cápsulas de Café Leggero - Caixa com 100 Unidades",
-    "descricao": "Ideal para quem ama café",
-    "preco": 223.10,
-    "imagem": "cafe100un.jpg",
-    "categoriaId": 3,
-    "subcategorias": 302,
-    "peso": 500
+    "nome": "Whey Protein Isolado 900g",
+    "descricao": "Proteína de alta qualidade para recuperação muscular. Sabor baunilha.",
+    "preco": 149.90,
+    "imagem": "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=800&h=800&fit=crop",
+    "categoriaId": 1,
+    "subcategorias": 101,
+    "peso": 900
   },
   {
     "id": 2,
-    "nome": "Cápsulas de Café Leggero - Caixa com 10 Unidades",
-    "descricao": "Ideal para quem ama café e não pode ficar sem",
-    "preco": 14.90,
-    "imagem": "cafe2.jpg",
+    "nome": "Creatina Monohidratada 300g",
+    "descricao": "Suplemento essencial para ganho de força e massa muscular.",
+    "preco": 89.90,
+    "imagem": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=800&fit=crop",
     "categoriaId": 1,
+    "subcategorias": 102,
+    "peso": 300
+  },
+  {
+    "id": 3,
+    "nome": "Pré-Treino Explosão 300g",
+    "descricao": "Energia máxima para seus treinos mais intensos.",
+    "preco": 119.90,
+    "imagem": "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=800&h=800&fit=crop",
+    "categoriaId": 1,
+    "subcategorias": 103,
+    "peso": 300
+  },
+  {
+    "id": 4,
+    "nome": "BCAA 300g - Aminoácidos",
+    "descricao": "Redução da fadiga e recuperação muscular acelerada.",
+    "preco": 79.90,
+    "imagem": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=800&fit=crop",
+    "categoriaId": 1,
+    "subcategorias": 101,
+    "peso": 300
+  },
+  {
+    "id": 5,
+    "nome": "Proteína Vegetal 500g",
+    "descricao": "100% vegana, rica em aminoácidos essenciais.",
+    "preco": 129.90,
+    "imagem": "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=800&h=800&fit=crop",
+    "categoriaId": 1,
+    "subcategorias": 101,
+    "peso": 500
+  },
+  {
+    "id": 6,
+    "nome": "Barra de Proteína 12 unidades",
+    "descricao": "Snack proteico perfeito para entre refeições.",
+    "preco": 49.90,
+    "imagem": "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?w=800&h=800&fit=crop",
+    "categoriaId": 1,
+    "subcategorias": 104,
+    "peso": 360
+  },
+  {
+    "id": 7,
+    "nome": "Kit Halteres Ajustáveis 2x20kg",
+    "descricao": "Halteres ajustáveis para treino completo em casa.",
+    "preco": 349.90,
+    "imagem": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=800&fit=crop",
+    "categoriaId": 2,
+    "subcategorias": 201,
+    "peso": 40000
+  },
+  {
+    "id": 8,
+    "nome": "Esteira Elétrica Profissional",
+    "descricao": "Esteira com sistema de amortecimento e inclinação automática.",
+    "preco": 2899.90,
+    "imagem": "https://images.unsplash.com/photo-1576678927484-cc907957088c?w=800&h=800&fit=crop",
+    "categoriaId": 2,
+    "subcategorias": 202,
+    "peso": 60000
+  },
+  {
+    "id": 9,
+    "nome": "Barra Paralela Portátil",
+    "descricao": "Barra para treino de força e resistência em qualquer lugar.",
+    "preco": 199.90,
+    "imagem": "https://images.unsplash.com/photo-1517836357463-d25dfeac3438?w=800&h=800&fit=crop",
+    "categoriaId": 2,
+    "subcategorias": 201,
+    "peso": 15000
+  },
+  {
+    "id": 10,
+    "nome": "Bicicleta Ergométrica Digital",
+    "descricao": "Cardio de alta performance com display interativo.",
+    "preco": 1899.90,
+    "imagem": "https://images.unsplash.com/photo-1576678927484-cc907957088c?w=800&h=800&fit=crop",
+    "categoriaId": 2,
+    "subcategorias": 202,
+    "peso": 35000
+  },
+  {
+    "id": 11,
+    "nome": "Camiseta Dry Fit Masculina",
+    "descricao": "Tecido tecnológico com rápida secagem e respirabilidade.",
+    "preco": 79.90,
+    "imagem": "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=800&h=800&fit=crop",
+    "categoriaId": 3,
+    "subcategorias": 301,
+    "peso": 200
+  },
+  {
+    "id": 12,
+    "nome": "Legging Fitness Feminina",
+    "descricao": "Alta compressão e modelagem para todos os tipos de treino.",
+    "preco": 129.90,
+    "imagem": "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=800&h=800&fit=crop",
+    "categoriaId": 3,
+    "subcategorias": 301,
+    "peso": 180
+  },
+  {
+    "id": 13,
+    "nome": "Tênis Running Profissional",
+    "descricao": "Amortecimento máximo e tecnologia anti-impacto.",
+    "preco": 399.90,
+    "imagem": "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&h=800&fit=crop",
+    "categoriaId": 3,
     "subcategorias": 302,
-    "peso": 550
+    "peso": 350
   },
   {
-    "id": 3,
-    "nome": "Café torrado em Grãos Premium 500g",
-    "descricao": "Café de alta qualidade com torra especial.",
-    "preco": 54.50,
-    "imagem": "https://images.cws.digital/produtos/m/75/71/cafe-torrado-em-grao-premium-500g-10307175-1725647980571.jpg",
-    "categoriaId": 1,
-    "subcategorias": 103,
-    "peso": 500
+    "id": 14,
+    "nome": "Garrafa Térmica 750ml",
+    "descricao": "Mantém a temperatura por até 12 horas. Inox 18/8.",
+    "preco": 59.90,
+    "imagem": "https://images.unsplash.com/photo-1602143407151-7111542de6e8?w=800&h=800&fit=crop",
+    "categoriaId": 4,
+    "subcategorias": 401,
+    "peso": 300
   },
   {
-    "id": 3,
-    "nome": "Café torrado em Grãos Premium 500g",
-    "descricao": "Café de alta qualidade com torra especial.",
-    "preco": 54.50,
-    "imagem": "cafe1.jpg",
+    "id": 15,
+    "nome": "Mochila Fitness com Bolso para Notebook",
+    "descricao": "Espaçosa, resistente e perfeita para academia e trabalho.",
+    "preco": 149.90,
+    "imagem": "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=800&h=800&fit=crop",
+    "categoriaId": 4,
+    "subcategorias": 402,
+    "peso": 800
+  },
+  {
+    "id": 16,
+    "nome": "Luvas de Treino com Suporte",
+    "descricao": "Proteção total para as mãos com suporte de punho.",
+    "preco": 49.90,
+    "imagem": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=800&fit=crop",
+    "categoriaId": 4,
+    "subcategorias": 403,
+    "peso": 150
+  },
+  {
+    "id": 17,
+    "nome": "Corda de Pular Profissional",
+    "descricao": "Ajustável e com rolamentos de alta performance.",
+    "preco": 39.90,
+    "imagem": "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=800&fit=crop",
+    "categoriaId": 4,
+    "subcategorias": 403,
+    "peso": 250
+  },
+  {
+    "id": 18,
+    "nome": "Multivitamínico Completo 120 cápsulas",
+    "descricao": "Todas as vitaminas e minerais essenciais em uma fórmula.",
+    "preco": 99.90,
+    "imagem": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&h=800&fit=crop",
     "categoriaId": 1,
-    "subcategorias": 103,
-    "peso": 500
+    "subcategorias": 105,
+    "peso": 120
+  },
+  {
+    "id": 19,
+    "nome": "Ômega 3 1000mg - 120 cápsulas",
+    "descricao": "Ácidos graxos essenciais para saúde cardiovascular.",
+    "preco": 79.90,
+    "imagem": "https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=800&h=800&fit=crop",
+    "categoriaId": 1,
+    "subcategorias": 105,
+    "peso": 120
+  },
+  {
+    "id": 20,
+    "nome": "Kit Completo Iniciante Fitness",
+    "descricao": "Kit com whey, creatina, BCAA e garrafa térmica. Ofertão!",
+    "preco": 349.90,
+    "imagem": "https://images.unsplash.com/photo-1621939514649-280e2ee25f60?w=800&h=800&fit=crop",
+    "categoriaId": 5,
+    "subcategorias": 501,
+    "peso": 2500
   }
 ]

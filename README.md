@@ -1,6 +1,6 @@
-# Café América Clone
+# Impulso Fit
 
-Clone monolítico do e-commerce Café América
+E-commerce de produtos fitness - Suplementos, equipamentos e acessórios para treino
 
 ## Stack:
 - Backend: Express + Prisma (SQLite)

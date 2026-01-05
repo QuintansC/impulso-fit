@@ -10,7 +10,7 @@ import axios from 'axios';
 import { CreditCard, Lock, User, Mail, MapPin, AlertCircle, Loader2, CheckCircle } from 'lucide-react';
 
 // Configuração da API
-const API_URL = process.env.NEXT_PUBLIC_URL_BACKEND || 'http://localhost:3333';
+const API_URL = process.env.NEXT_PUBLIC_URL_BACKEND || 'http://localhost:3333/api';
 
 const CARD_ELEMENT_OPTIONS = {
   style: {

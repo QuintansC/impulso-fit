@@ -6,7 +6,7 @@ import { PrismaClient } from '@prisma/client';
 const router = express.Router();
 const prisma = new PrismaClient();
 
-router.get('/api/categorias', async (req, res) => {
+router.get('/', async (req, res) => {
     const categorias = await prisma.categoria.findMany({ include: { produtos: true } });
     res.json(categorias);
 });

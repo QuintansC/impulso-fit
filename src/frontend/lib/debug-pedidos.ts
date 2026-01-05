@@ -20,7 +20,7 @@ export function DebugPedidos() {
       })) || []
     },
     ambiente: {
-      apiUrl: process.env.NEXT_PUBLIC_URL_BACKEND || 'http://localhost:3333',
+      apiUrl: process.env.NEXT_PUBLIC_URL_BACKEND || 'http://localhost:3333/api',
       stripeKey: !!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
     },
     validacao: {

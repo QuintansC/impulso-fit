@@ -22,7 +22,7 @@ export default function DebugPage() {
 
   const testarAPIBackend = async () => {
     try {
-      const response = await fetch(`${debugInfo.ambiente.apiUrl}/api/produtos`);
+      const response = await fetch(`${debugInfo.ambiente.apiUrl}/produtos`);
       const data = await response.json();
       setTesteResultado({
         sucesso: true,
@@ -44,15 +44,15 @@ export default function DebugPage() {
         <title>Debug - Sistema de Pedidos</title>
       </Head>
 
-      <div className="min-h-screen bg-gray-100 py-8">
+      <div className="min-h-screen bg-[#111111] py-8">
         <div className="container mx-auto px-4">
-          <h1 className="text-3xl font-bold text-gray-900 mb-8">Debug - Sistema de Pedidos</h1>
+          <h1 className="text-3xl font-bold text-[#b71c1c] mb-8">Debug - Sistema de Pedidos</h1>
 
           {/* Estado do Carrinho */}
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Estado do Carrinho</h2>
+          <div className="bg-[#222] border border-[#b71c1c] rounded-lg shadow-lg p-6 mb-6">
+            <h2 className="text-xl font-bold text-white mb-4">Estado do Carrinho</h2>
             <div className="grid grid-cols-2 gap-4">
-              <div>
+              <div className="text-white">
                 <p><strong>Existe:</strong> {debugInfo.carrinho.existe ? '✅' : '❌'}</p>
                 <p><strong>Quantidade de itens:</strong> {debugInfo.carrinho.quantidade}</p>
                 <p><strong>Carrinho válido:</strong> {debugInfo.validacao.carrinhoValido ? '✅' : '❌'}</p>
@@ -61,7 +61,7 @@ export default function DebugPage() {
               <div>
                 <button
                   onClick={adicionarProdutoTeste}
-                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                  className="bg-[#b71c1c] text-white px-4 py-2 rounded hover:bg-white hover:text-[#b71c1c] border border-[#b71c1c] transition"
                 >
                   Adicionar Produto de Teste
                 </button>
@@ -71,10 +71,10 @@ export default function DebugPage() {
             {/* Detalhes dos itens */}
             {debugInfo.carrinho.itens.length > 0 && (
               <div className="mt-4">
-                <h3 className="font-bold mb-2">Itens do Carrinho:</h3>
+                <h3 className="font-bold mb-2 text-white">Itens do Carrinho:</h3>
                 <div className="space-y-2">
                   {debugInfo.carrinho.itens.map((item, index) => (
-                    <div key={index} className="border rounded p-3 bg-gray-50">
+                    <div key={index} className="border border-[#b71c1c] rounded p-3 bg-[#181818] text-white">
                       <p><strong>ID:</strong> {item.id} {item.temId ? '✅' : '❌'}</p>
                       <p><strong>Nome:</strong> {item.nome} {item.temNome ? '✅' : '❌'}</p>
                       <p><strong>Preço:</strong> R$ {item.preco} {item.temPreco ? '✅' : '❌'}</p>
@@ -87,9 +87,9 @@ export default function DebugPage() {
           </div>
 
           {/* Configuração do Ambiente */}
-          <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Configuração do Ambiente</h2>
-            <div className="space-y-2">
+          <div className="bg-[#222] border border-[#b71c1c] rounded-lg shadow-lg p-6 mb-6">
+            <h2 className="text-xl font-bold text-white mb-4">Configuração do Ambiente</h2>
+            <div className="space-y-2 text-white">
               <p><strong>API URL:</strong> {debugInfo.ambiente.apiUrl}</p>
               <p><strong>Stripe Key configurada:</strong> {debugInfo.ambiente.stripeKey ? '✅' : '❌'}</p>
             </div>
@@ -97,13 +97,13 @@ export default function DebugPage() {
             <div className="mt-4">
               <button
                 onClick={testarAPIBackend}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+                className="bg-[#b71c1c] text-white px-4 py-2 rounded hover:bg-white hover:text-[#b71c1c] border border-[#b71c1c] transition"
               >
                 Testar Conexão com Backend
               </button>
               
               {testeResultado && (
-                <div className={`mt-4 p-4 rounded ${testeResultado.sucesso ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                <div className={`mt-4 p-4 rounded border ${testeResultado.sucesso ? 'bg-[#1a1a1a] border-[#4caf50] text-[#4caf50]' : 'bg-[#1a1a1a] border-[#b71c1c] text-[#b71c1c]'}`}>
                   {testeResultado.sucesso ? (
                     <>
                       <p>✅ Backend respondeu com status {testeResultado.status}</p>
@@ -118,9 +118,9 @@ export default function DebugPage() {
           </div>
 
           {/* JSON Debug */}
-          <div className="bg-white rounded-lg shadow-lg p-6">
-            <h2 className="text-xl font-bold text-gray-900 mb-4">Debug JSON</h2>
-            <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto">
+          <div className="bg-[#222] border border-[#b71c1c] rounded-lg shadow-lg p-6">
+            <h2 className="text-xl font-bold text-white mb-4">Debug JSON</h2>
+            <pre className="bg-[#111] border border-[#b71c1c] p-4 rounded text-sm overflow-auto text-gray-300">
               {JSON.stringify(debugInfo, null, 2)}
             </pre>
           </div>

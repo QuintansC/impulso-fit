@@ -13,8 +13,9 @@ model Usuario {
   email     String   @unique
   senha     String
   role      String   @default("cliente")
-  pedidos   Pedido[]
-  criadoEm  DateTime @default(now())
+  pedidos    Pedido[]
+  favoritos  Favorito[]
+  criadoEm   DateTime @default(now())
 }
 
 model Produto {
@@ -27,8 +28,19 @@ model Produto {
   categoriaId Int
   criadoEm    DateTime  @default(now())
   pedidos     PedidoProduto[]
+  favoritos   Favorito[]
   peso        Int?
   estoque     Int       @default(0)
+}
+
+model Favorito {
+  usuarioId Int
+  produtoId Int
+  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  produto   Produto  @relation(fields: [produtoId], references: [id])
+  criadoEm  DateTime @default(now())
+
+  @@id([usuarioId, produtoId])
 }
 
 model Categoria {

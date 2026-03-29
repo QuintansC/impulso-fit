@@ -1,15 +1,28 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { Heart } from 'lucide-react';
 import { Produto } from '@/types';
+import { useCarrinho } from '@/context/CarrinhoContext';
+import { useFavoritos } from '@/context/FavoritosContext';
+import { useAuth } from '@/context/AuthContext';
 
 type Props = {
   produto: Produto;
 };
-import { useCarrinho } from '@/context/CarrinhoContext';
 
 export default function ProdutoCard({ produto }: Props) {
-  const { carrinho, adicionarProdutoCompleto, removerProduto, limparCarrinho } = useCarrinho();
-  
+  const { adicionarProdutoCompleto } = useCarrinho();
+  const { isFavorito, toggleFavorito } = useFavoritos();
+  const { usuario } = useAuth();
+  const router = useRouter();
   const esgotado = produto.estoque === 0;
+  const favoritado = isFavorito(produto.id);
+
+  const handleToggleFavorito = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!usuario) { router.push('/login'); return; }
+    toggleFavorito(produto);
+  };
 
   const adicionarAoCarrinho = () => {
     if (esgotado) return;
@@ -29,6 +42,18 @@ export default function ProdutoCard({ produto }: Props) {
             (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=800&fit=crop';
           }}
         />
+        {/* Botão favorito */}
+        <button
+          onClick={handleToggleFavorito}
+          className="absolute top-3 left-3 p-1.5 rounded-full bg-black/40 backdrop-blur-sm hover:bg-black/60 transition-colors z-10"
+          title={favoritado ? 'Remover dos favoritos' : 'Adicionar aos favoritos'}
+        >
+          <Heart
+            size={16}
+            className={favoritado ? 'text-red-500 fill-red-500' : 'text-white'}
+          />
+        </button>
+
         {esgotado ? (
           <div className="absolute top-3 right-3">
             <div className="bg-gray-800/90 backdrop-blur-sm text-gray-300 text-xs font-bold px-2 py-1 rounded-full border border-gray-600">

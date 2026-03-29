@@ -109,7 +109,7 @@ export default function Header() {
             )
           )}
 
-          <Link href="#" className="flex items-center gap-2 text-white hover:text-secondary transition-colors group">
+          <Link href="/favoritos" className="flex items-center gap-2 text-white hover:text-secondary transition-colors group">
             <div className="p-2 rounded-lg bg-dark-light group-hover:bg-secondary/20 transition-colors">
               <Heart size={20} />
             </div>
@@ -233,7 +233,7 @@ export default function Header() {
               )
             )}
 
-            <Link href="#" className="flex items-center gap-2 text-white hover:text-[#b71c1c] py-2" onClick={() => setMobileMenu(false)}>
+            <Link href="/favoritos" className="flex items-center gap-2 text-white hover:text-[#b71c1c] py-2" onClick={() => setMobileMenu(false)}>
               <Heart size={22} />
               <span className="font-semibold">Favoritos</span>
             </Link>

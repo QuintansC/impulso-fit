@@ -33,6 +33,16 @@ export type Pedido = {
   }[];
 };
 
+export type Avaliacao = {
+  id: number;
+  usuarioId: number;
+  produtoId: number;
+  nota: number;
+  comentario: string;
+  criadoEm: string;
+  usuario: { id: number; nome: string };
+};
+
 export type UsuarioAdmin = {
   id: number;
   nome: string;

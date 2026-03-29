@@ -1,24 +1,88 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
-import { useState } from 'react';
-import { ShoppingCart, Package, Tag, Weight } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { ShoppingCart, Package, Tag, Weight, Star } from 'lucide-react';
+import Link from 'next/link';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import ProdutoCard from '@/components/ProdutoCard';
-import { Produto } from '@/types';
+import { Produto, Avaliacao } from '@/types';
 import { getProduto, getProdutos } from '@/lib/services/produtosService';
+import { getAvaliacoes, enviarAvaliacao } from '@/lib/services/avaliacoesService';
 import { useCarrinho } from '@/context/CarrinhoContext';
+import { useAuth } from '@/context/AuthContext';
 
 type Props = {
   produto: Produto;
   relacionados: Produto[];
 };
 
+function Estrelas({ nota, onChange }: { nota: number; onChange?: (n: number) => void }) {
+  const [hover, setHover] = useState(0);
+  return (
+    <div className="flex gap-0.5">
+      {[1, 2, 3, 4, 5].map((n) => (
+        <Star
+          key={n}
+          size={onChange ? 24 : 16}
+          className={`${(hover || nota) >= n ? 'text-yellow-400 fill-yellow-400' : 'text-gray-600'} ${onChange ? 'cursor-pointer transition-colors' : ''}`}
+          onMouseEnter={() => onChange && setHover(n)}
+          onMouseLeave={() => onChange && setHover(0)}
+          onClick={() => onChange?.(n)}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function ProdutoDetalhePage({ produto, relacionados }: Props) {
   const [quantidade, setQuantidade] = useState(1);
   const [adicionado, setAdicionado] = useState(false);
   const { adicionarProdutoCompleto } = useCarrinho();
+  const { usuario } = useAuth();
   const esgotado = produto.estoque === 0;
+
+  // Avaliações
+  const [avaliacoes, setAvaliacoes] = useState<Avaliacao[]>([]);
+  const [nota, setNota] = useState(5);
+  const [comentario, setComentario] = useState('');
+  const [enviando, setEnviando] = useState(false);
+  const [erroAvaliacao, setErroAvaliacao] = useState('');
+
+  useEffect(() => {
+    getAvaliacoes(produto.id).then(setAvaliacoes).catch(() => {});
+  }, [produto.id]);
+
+  const minhaAvaliacao = avaliacoes.find((a) => a.usuarioId === usuario?.id);
+
+  useEffect(() => {
+    if (minhaAvaliacao) {
+      setNota(minhaAvaliacao.nota);
+      setComentario(minhaAvaliacao.comentario);
+    }
+  }, [minhaAvaliacao]);
+
+  const handleEnviarAvaliacao = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!comentario.trim()) { setErroAvaliacao('Escreva um comentário.'); return; }
+    setErroAvaliacao('');
+    setEnviando(true);
+    try {
+      const nova = await enviarAvaliacao(produto.id, nota, comentario);
+      setAvaliacoes((prev) => {
+        const sem = prev.filter((a) => a.id !== nova.id);
+        return [nova, ...sem];
+      });
+    } catch {
+      setErroAvaliacao('Erro ao enviar avaliação. Tente novamente.');
+    } finally {
+      setEnviando(false);
+    }
+  };
+
+  const mediaNotas = avaliacoes.length
+    ? avaliacoes.reduce((acc, a) => acc + a.nota, 0) / avaliacoes.length
+    : 0;
 
   const handleAdicionarCarrinho = () => {
     if (esgotado) return;
@@ -157,6 +221,85 @@ export default function ProdutoDetalhePage({ produto, relacionados }: Props) {
               </div>
             </div>
           </div>
+
+          {/* Avaliações */}
+          <section className="mb-16">
+            <div className="flex items-center gap-3 mb-6">
+              <h2 className="text-xl font-bold text-white">Avaliações</h2>
+              {avaliacoes.length > 0 && (
+                <div className="flex items-center gap-2">
+                  <Estrelas nota={Math.round(mediaNotas)} />
+                  <span className="text-gray-400 text-sm">
+                    {mediaNotas.toFixed(1)} ({avaliacoes.length} {avaliacoes.length === 1 ? 'avaliação' : 'avaliações'})
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Formulário */}
+            {usuario ? (
+              <form onSubmit={handleEnviarAvaliacao} className="bg-dark-card border border-primary/10 rounded-xl p-6 mb-8">
+                <h3 className="text-white font-semibold mb-4">
+                  {minhaAvaliacao ? 'Editar sua avaliação' : 'Deixe sua avaliação'}
+                </h3>
+                <div className="flex items-center gap-3 mb-4">
+                  <span className="text-gray-400 text-sm">Nota:</span>
+                  <Estrelas nota={nota} onChange={setNota} />
+                </div>
+                <textarea
+                  value={comentario}
+                  onChange={(e) => setComentario(e.target.value)}
+                  rows={3}
+                  placeholder="Conte sua experiência com o produto..."
+                  className="w-full px-3 py-2.5 bg-dark-lighter border border-white/10 rounded-lg text-white text-sm resize-none focus:outline-none focus:border-primary/50 placeholder:text-gray-600 mb-3"
+                />
+                {erroAvaliacao && (
+                  <p className="text-red-400 text-sm mb-3">{erroAvaliacao}</p>
+                )}
+                <button
+                  type="submit"
+                  disabled={enviando}
+                  className="px-5 py-2 bg-primary hover:bg-primary/90 text-white text-sm font-semibold rounded-lg transition-colors disabled:opacity-50"
+                >
+                  {enviando ? 'Enviando...' : minhaAvaliacao ? 'Atualizar' : 'Publicar avaliação'}
+                </button>
+              </form>
+            ) : (
+              <div className="bg-dark-card border border-primary/10 rounded-xl p-5 mb-8 text-center">
+                <p className="text-gray-400 text-sm">
+                  <Link href="/login" className="text-primary hover:underline font-medium">Faça login</Link>
+                  {' '}para deixar uma avaliação.
+                </p>
+              </div>
+            )}
+
+            {/* Lista */}
+            {avaliacoes.length === 0 ? (
+              <p className="text-gray-500 text-sm">Nenhuma avaliação ainda. Seja o primeiro!</p>
+            ) : (
+              <ul className="space-y-4">
+                {avaliacoes.map((av) => (
+                  <li key={av.id} className="bg-dark-card border border-primary/10 rounded-xl p-5">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold text-sm">
+                          {av.usuario.nome[0].toUpperCase()}
+                        </div>
+                        <span className="text-white font-medium text-sm">{av.usuario.nome}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Estrelas nota={av.nota} />
+                        <span className="text-gray-500 text-xs">
+                          {new Date(av.criadoEm).toLocaleDateString('pt-BR')}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="text-gray-300 text-sm leading-relaxed">{av.comentario}</p>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
 
           {/* Produtos relacionados */}
           {relacionados.length > 0 && (

@@ -2,6 +2,7 @@ import Stripe from 'stripe';
 import bcrypt from 'bcryptjs';
 import prisma from '../lib/prisma';
 import { AppError } from '../errors/AppError';
+import { enviarConfirmacaoPedido } from './emailService';
 
 function getStripe() {
   const key = process.env.STRIPE_SECRET_KEY;
@@ -151,11 +152,29 @@ export async function criarPedido(params: {
     include: { produtos: { include: { produto: true } } },
   });
 
+  let emailEnviado = false;
+  try {
+    await enviarConfirmacaoPedido(usuario.email, usuario.nome, {
+      id: pedido.id,
+      total: pedido.total,
+      status: pedido.status,
+      criadoEm: pedido.criadoEm,
+      itens: pedido.produtos.map((pp) => ({
+        nome: pp.produto.nome,
+        quantidade: pp.quantidade,
+        precoUnitario: pp.precoUnitario,
+      })),
+    });
+    emailEnviado = true;
+  } catch (err) {
+    console.error('Erro ao enviar email de confirmação:', err);
+  }
+
   return {
     id: pedido.id,
     total: pedido.total,
     status: pedido.status,
-    emailEnviado: false,
+    emailEnviado,
     criadoEm: pedido.criadoEm,
   };
 }

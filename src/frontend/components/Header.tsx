@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ShoppingCart, User, Heart, Menu, X, LogOut, LayoutDashboard, ChevronDown } from 'lucide-react';
+import { ShoppingCart, User, Heart, Menu, X, LogOut, LayoutDashboard, ChevronDown, Package } from 'lucide-react';
 import { useCarrinho } from '@/context/CarrinhoContext';
 import { useAuth } from '@/context/AuthContext';
 import { DEPARTMENTS } from '@/lib/constants';
@@ -81,6 +81,14 @@ export default function Header() {
                         <span className="text-sm font-medium">Painel Admin</span>
                       </Link>
                     )}
+                    <Link
+                      href="/pedidos"
+                      className="flex items-center gap-2 px-4 py-3 text-white hover:bg-primary/10 transition-colors border-b border-primary/5"
+                      onClick={() => setUserDropdown(false)}
+                    >
+                      <Package size={16} className="text-primary" />
+                      <span className="text-sm font-medium">Meus Pedidos</span>
+                    </Link>
                     <button
                       onClick={() => { logout(); setUserDropdown(false); }}
                       className="flex items-center gap-2 w-full px-4 py-3 text-white hover:bg-red-500/10 transition-colors text-left"
@@ -205,6 +213,10 @@ export default function Header() {
                       <span className="font-semibold">Painel Admin</span>
                     </Link>
                   )}
+                  <Link href="/pedidos" className="flex items-center gap-2 text-white hover:text-[#b71c1c] py-2" onClick={() => setMobileMenu(false)}>
+                    <Package size={20} />
+                    <span className="font-semibold">Meus Pedidos</span>
+                  </Link>
                   <button
                     onClick={() => { logout(); setMobileMenu(false); }}
                     className="flex items-center gap-2 text-red-400 hover:text-red-300 py-2"

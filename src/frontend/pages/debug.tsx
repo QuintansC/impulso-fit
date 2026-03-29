@@ -10,11 +10,12 @@ export default function DebugPage() {
 
   const adicionarProdutoTeste = () => {
     const produtoTeste = {
-      id: '1',
+      id: 1,
       nome: 'Café Premium Teste',
       preco: 15.90,
       imagemUrl: '/cafe1.jpg',
-      descricao: 'Café premium para teste'
+      descricao: 'Café premium para teste',
+      categoriaId: 1,
     };
     
     adicionarProdutoCompleto(produtoTeste, 2);

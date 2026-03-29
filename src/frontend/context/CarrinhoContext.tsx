@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
+import { Produto } from '@/types';
 
 type CarrinhoItem = {
-  id: string;
+  id: number;
   quantidade: number;
   nome: string;
   preco: number;
@@ -11,11 +12,9 @@ type CarrinhoItem = {
 
 type CarrinhoContextType = {
   carrinho: CarrinhoItem[];
-  adicionarProduto: (id: string) => void;
-  removerProduto: (id: string) => void;
+  removerProduto: (id: number) => void;
   limparCarrinho: () => void;
-  adicionarProdutoQuantidade: (id: string, quantidade: number) => void;
-  adicionarProdutoCompleto: (produto: any, quantidade: number) => void;
+  adicionarProdutoCompleto: (produto: Produto, quantidade: number) => void;
 };
 
 const CarrinhoContext = createContext<CarrinhoContextType | undefined>(undefined);
@@ -27,20 +26,14 @@ export const CarrinhoProvider = ({ children }: { children: React.ReactNode }) =>
     const armazenado = localStorage.getItem('carrinho');
     if (armazenado) {
       try {
-        const carrinhoSalvo = JSON.parse(armazenado);
-        // Verificar se o carrinho tem a estrutura nova (com nome e preco)
-        if (carrinhoSalvo.length > 0 && carrinhoSalvo[0].nome !== undefined) {
-          setCarrinho(carrinhoSalvo);
+        const salvo = JSON.parse(armazenado);
+        if (Array.isArray(salvo) && salvo.length > 0 && salvo[0].nome !== undefined) {
+          setCarrinho(salvo);
         } else {
-          // Carrinho com estrutura antiga - limpar
-          console.log('Carrinho com estrutura antiga detectado. Limpando...');
           localStorage.removeItem('carrinho');
-          setCarrinho([]);
         }
       } catch {
-        // Se houver erro ao fazer parse, limpar o localStorage
         localStorage.removeItem('carrinho');
-        setCarrinho([]);
       }
     }
   }, []);
@@ -49,59 +42,35 @@ export const CarrinhoProvider = ({ children }: { children: React.ReactNode }) =>
     localStorage.setItem('carrinho', JSON.stringify(carrinho));
   }, [carrinho]);
 
-  const adicionarProduto = (id: string) => {
-    // Esta função agora deve ser evitada - use adicionarProdutoCompleto
-    console.warn('adicionarProduto está depreciado. Use adicionarProdutoCompleto.');
-  };
-
-  const adicionarProdutoQuantidade = (id: string, quantidade: number) => {
-    // Esta função agora deve ser evitada - use adicionarProdutoCompleto
-    console.warn('adicionarProdutoQuantidade está depreciado. Use adicionarProdutoCompleto.');
-  };
-
-  const removerProduto = (id: string) => {
-    setCarrinho(prev => prev.filter(p => p.id !== id));
-  };
-
-  const adicionarProdutoCompleto = (produto: any, quantidade: number) => {
-    setCarrinho((carrinhoAtual) => {
-      const existente = carrinhoAtual.find(item => item.id === produto.id);
+  const adicionarProdutoCompleto = (produto: Produto, quantidade: number) => {
+    setCarrinho((atual) => {
+      const existente = atual.find(item => item.id === produto.id);
       if (existente) {
-        // Atualiza a quantidade do produto já existente
-        return carrinhoAtual.map(item =>
+        return atual.map(item =>
           item.id === produto.id
             ? { ...item, quantidade: item.quantidade + quantidade }
-            : item
+            : item,
         );
-      } else {
-        // Adiciona novo produto ao carrinho com informações completas
-        return [...carrinhoAtual, { 
-          id: produto.id,
-          quantidade,
-          nome: produto.nome,
-          preco: produto.preco,
-          imagemUrl: produto.imagemUrl,
-          descricao: produto.descricao
-        }];
       }
+      return [...atual, {
+        id: produto.id,
+        quantidade,
+        nome: produto.nome,
+        preco: produto.preco,
+        imagemUrl: produto.imagemUrl,
+        descricao: produto.descricao,
+      }];
     });
   };
 
-  const limparCarrinho = () => {
-    setCarrinho([]);
+  const removerProduto = (id: number) => {
+    setCarrinho(prev => prev.filter(p => p.id !== id));
   };
 
+  const limparCarrinho = () => setCarrinho([]);
+
   return (
-    <CarrinhoContext.Provider
-      value={{ 
-        carrinho, 
-        adicionarProduto, 
-        removerProduto, 
-        limparCarrinho, 
-        adicionarProdutoQuantidade,
-        adicionarProdutoCompleto 
-      }}
-    >
+    <CarrinhoContext.Provider value={{ carrinho, removerProduto, limparCarrinho, adicionarProdutoCompleto }}>
       {children}
     </CarrinhoContext.Provider>
   );

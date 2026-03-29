@@ -1,28 +1,14 @@
-import { useEffect, useState } from 'react';
-import { Produto } from '@/types';
-import CartItem from '@/components/CartItem';
-import { getProdutos } from '@/lib/services/produtosService';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
+import CartItem from '@/components/CartItem';
 import { useCarrinho } from '@/context/CarrinhoContext';
+import { Produto } from '@/types';
 
 export default function CarrinhoPage() {
   const { carrinho, removerProduto } = useCarrinho();
-  const [produtos, setProdutos] = useState<Produto[]>([]);
 
-  useEffect(() => {
-    getProdutos().then(setProdutos);
-  }, []); 
-
-  const getProduto = (id: number) => {
-    return produtos.find(p => p.id === id);
-  }
-
-  const total = carrinho.reduce((acc, item) => {
-    // Agora o item já tem o preço, não precisa buscar
-    return acc + (item.preco * item.quantidade);
-  }, 0);
+  const total = carrinho.reduce((acc, item) => acc + item.preco * item.quantidade, 0);
 
   return (
     <>
@@ -39,18 +25,15 @@ export default function CarrinhoPage() {
         ) : (
           <>
             <div className="space-y-4">
-              {carrinho.map((item: any) => {
-                // Agora podemos usar diretamente o item do carrinho
-                const produto = {
+              {carrinho.map((item) => {
+                const produto: Produto = {
                   id: item.id,
                   nome: item.nome,
                   preco: item.preco,
-                  imagemUrl: item.imagemUrl,
-                  descricao: item.descricao,
-                  categoriaId: 1, // Valor padrão para compatibilidade
-                  criadoEm: new Date().toISOString() // Valor padrão
+                  imagemUrl: item.imagemUrl ?? '',
+                  descricao: item.descricao ?? '',
+                  categoriaId: 0,
                 };
-                
                 return (
                   <CartItem
                     key={item.id}

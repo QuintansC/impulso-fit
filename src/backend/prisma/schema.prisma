@@ -12,6 +12,7 @@ model Usuario {
   nome      String
   email     String   @unique
   senha     String
+  role      String   @default("cliente")
   pedidos   Pedido[]
   criadoEm  DateTime @default(now())
 }
@@ -54,10 +55,12 @@ model Pedido {
 }
 
 model PedidoProduto {
-  pedidoId  Int
-  produtoId Int
-  pedido    Pedido  @relation(fields: [pedidoId], references: [id])
-  produto   Produto @relation(fields: [produtoId], references: [id])
+  pedidoId      Int
+  produtoId     Int
+  quantidade    Int   @default(1)
+  precoUnitario Float @default(0)
+  pedido        Pedido  @relation(fields: [pedidoId], references: [id])
+  produto       Produto @relation(fields: [produtoId], references: [id])
 
   @@id([pedidoId, produtoId])
 }

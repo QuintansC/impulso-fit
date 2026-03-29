@@ -1,20 +1,35 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import { useAuth } from '@/context/AuthContext';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
   const [erro, setErro] = useState('');
+  const [loading, setLoading] = useState(false);
+  const { login } = useAuth();
+  const router = useRouter();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!email || !senha) {
       setErro('Preencha todos os campos.');
       return;
     }
     setErro('');
-    alert('Login simulado!');
+    setLoading(true);
+    try {
+      await login(email, senha);
+      const redirect = (router.query.redirect as string) || '/';
+      router.push(redirect);
+    } catch (err: any) {
+      const mensagem = err.response?.data?.erro || 'Erro ao fazer login. Tente novamente.';
+      setErro(mensagem);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -33,6 +48,7 @@ export default function LoginPage() {
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 required
+                disabled={loading}
               />
             </label>
             <label className="flex flex-col gap-1">
@@ -44,14 +60,16 @@ export default function LoginPage() {
                 value={senha}
                 onChange={e => setSenha(e.target.value)}
                 required
+                disabled={loading}
               />
             </label>
-            {erro && <div className="text-[#b71c1c] text-sm">{erro}</div>}
+            {erro && <div className="text-[#b71c1c] text-sm bg-[#b71c1c]/10 border border-[#b71c1c]/30 rounded px-3 py-2">{erro}</div>}
             <button
               type="submit"
-              className="bg-[#b71c1c] text-white font-semibold rounded px-4 py-2 mt-2 hover:bg-white hover:text-[#b71c1c] border border-[#b71c1c] transition"
+              disabled={loading}
+              className="bg-[#b71c1c] text-white font-semibold rounded px-4 py-2 mt-2 hover:bg-white hover:text-[#b71c1c] border border-[#b71c1c] transition disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              Entrar
+              {loading ? 'Entrando...' : 'Entrar'}
             </button>
           </form>
           <div className="flex flex-col items-center mt-6 gap-2">

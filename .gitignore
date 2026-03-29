@@ -29,3 +29,6 @@ Thumbs.db
 *.swp
 *.swo
 *~
+
+# Memory (contexto local, não versionado)
+memory/

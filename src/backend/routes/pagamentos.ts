@@ -1,28 +1,25 @@
 // src/backend/routes/pagamentos.ts
 
 import express from 'express';
-import { PrismaClient } from '@prisma/client';
+import bcrypt from 'bcryptjs';
+import prisma from '../lib/prisma';
 
 const router = express.Router();
-const prisma = new PrismaClient();
 
 // POST /api/pagamentos/create-payment-intent
 router.post('/create-payment-intent', async (req, res) => {
   try {
-    const { amount, metadata } = req.body;
+    const { amount } = req.body;
 
     if (!amount || amount <= 0) {
       return res.status(400).json({ erro: 'Valor inválido' });
     }
 
     // Por enquanto, retornamos um clientSecret simulado
-    // Em produção, você integraria com o Stripe aqui
+    // Em produção, integrar com o Stripe aqui
     const clientSecret = `pi_test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
-    res.json({
-      clientSecret,
-      amount
-    });
+    res.json({ clientSecret, amount });
   } catch (error: any) {
     console.error('Erro ao criar payment intent:', error);
     res.status(500).json({ erro: 'Erro ao criar payment intent' });
@@ -36,74 +33,76 @@ router.post('/create-order', async (req, res) => {
       usuarioId,
       produtos,
       total,
-      stripePaymentIntentId,
-      enderecoEntrega,
-      stripePagamento,
       clienteNome,
       clienteEmail,
       status
     } = req.body;
 
-    // Validar dados obrigatórios
     if (!usuarioId || !produtos || !Array.isArray(produtos) || produtos.length === 0) {
       return res.status(400).json({ erro: 'Dados do pedido inválidos' });
     }
 
-    // Verificar se o usuário existe, se não existir, criar um temporário
-    let usuario = await prisma.usuario.findUnique({
-      where: { id: usuarioId }
-    });
+    // Verificar se o usuário existe; se não, criar um temporário
+    let usuario = await prisma.usuario.findUnique({ where: { id: usuarioId } });
 
     if (!usuario) {
-      // Criar usuário temporário se não existir
-      // Verificar se o email já existe
       const emailBase = clienteEmail || `cliente${usuarioId}@exemplo.com`;
       let emailFinal = emailBase;
       let tentativas = 0;
-      
+
       while (await prisma.usuario.findUnique({ where: { email: emailFinal } })) {
         tentativas++;
         emailFinal = `${emailBase.split('@')[0]}+${tentativas}@${emailBase.split('@')[1]}`;
       }
 
+      const senhaTemp = await bcrypt.hash(`temp_${Date.now()}`, 10);
+
       usuario = await prisma.usuario.create({
         data: {
           nome: clienteNome || 'Cliente',
           email: emailFinal,
-          senha: 'temp' // Senha temporária
-        }
+          senha: senhaTemp,
+        },
       });
     }
 
-    // Criar o pedido
+    // Agregar quantidades para evitar duplicatas na chave composta PedidoProduto
+    const produtosAgregados = new Map<number, { quantidade: number; precoUnitario: number }>();
+    for (const prod of produtos) {
+      const id = parseInt(prod.produtoId);
+      const qtd = parseInt(prod.quantidade) || 1;
+      const preco = parseFloat(prod.precoUnitario) || 0;
+      if (produtosAgregados.has(id)) {
+        produtosAgregados.get(id)!.quantidade += qtd;
+      } else {
+        produtosAgregados.set(id, { quantidade: qtd, precoUnitario: preco });
+      }
+    }
+
     const pedido = await prisma.pedido.create({
       data: {
         usuarioId: usuario.id,
         total: parseFloat(total),
         status: status || 'pago',
         produtos: {
-          create: produtos.map((prod: any) => ({
-            produtoId: parseInt(prod.produtoId)
-            // Nota: PedidoProduto não tem campos de quantidade/preço no schema atual
-            // Os dados de quantidade e preço estão sendo armazenados apenas no total do pedido
-          }))
-        }
+          create: Array.from(produtosAgregados.entries()).map(([produtoId, dados]) => ({
+            produtoId,
+            quantidade: dados.quantidade,
+            precoUnitario: dados.precoUnitario,
+          })),
+        },
       },
       include: {
-        produtos: {
-          include: {
-            produto: true
-          }
-        }
-      }
+        produtos: { include: { produto: true } },
+      },
     });
 
     res.json({
       id: pedido.id,
       total: pedido.total,
       status: pedido.status,
-      emailEnviado: false, // Por enquanto false, você pode integrar com serviço de email
-      criadoEm: pedido.criadoEm
+      emailEnviado: false,
+      criadoEm: pedido.criadoEm,
     });
   } catch (error: any) {
     console.error('Erro ao criar pedido:', error);
@@ -112,4 +111,3 @@ router.post('/create-order', async (req, res) => {
 });
 
 export default router;
-

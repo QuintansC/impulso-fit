@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import { swaggerSpec } from './lib/swagger';
 import authRouter from './routes/auth';
 import produtosRouter from './routes/produtos';
 import categoriasRouter from './routes/categorias';
@@ -18,6 +20,9 @@ const app = express();
 
 app.use(cors({ origin: ['http://localhost:3000'], credentials: true }));
 app.use(express.json());
+
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+app.get('/api/docs.json', (_req, res) => res.json(swaggerSpec));
 
 app.use('/api/auth', authRouter);
 app.use('/api/produtos', produtosRouter);

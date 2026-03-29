@@ -82,6 +82,7 @@ export default function AdminProdutos() {
                       <th className="text-left px-4 py-3">Produto</th>
                       <th className="text-left px-4 py-3 hidden md:table-cell">Categoria</th>
                       <th className="text-left px-4 py-3">Preço</th>
+                      <th className="text-left px-4 py-3 hidden sm:table-cell">Estoque</th>
                       <th className="text-right px-4 py-3">Ações</th>
                     </tr>
                   </thead>
@@ -106,6 +107,15 @@ export default function AdminProdutos() {
                         </td>
                         <td className="px-4 py-3 text-primary font-semibold">
                           R$ {produto.preco.toFixed(2)}
+                        </td>
+                        <td className="px-4 py-3 hidden sm:table-cell">
+                          {produto.estoque === 0 ? (
+                            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-red-500/10 text-red-400 border border-red-500/20">Esgotado</span>
+                          ) : produto.estoque <= 5 ? (
+                            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">{produto.estoque} un.</span>
+                          ) : (
+                            <span className="px-2 py-0.5 rounded text-xs font-semibold bg-green-500/10 text-green-400 border border-green-500/20">{produto.estoque} un.</span>
+                          )}
                         </td>
                         <td className="px-4 py-3">
                           <div className="flex items-center gap-2 justify-end">

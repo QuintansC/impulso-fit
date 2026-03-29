@@ -18,8 +18,10 @@ export default function ProdutoDetalhePage({ produto, relacionados }: Props) {
   const [quantidade, setQuantidade] = useState(1);
   const [adicionado, setAdicionado] = useState(false);
   const { adicionarProdutoCompleto } = useCarrinho();
+  const esgotado = produto.estoque === 0;
 
   const handleAdicionarCarrinho = () => {
+    if (esgotado) return;
     adicionarProdutoCompleto(produto, quantidade);
     setAdicionado(true);
     setTimeout(() => setAdicionado(false), 2000);
@@ -70,39 +72,55 @@ export default function ProdutoDetalhePage({ produto, relacionados }: Props) {
                 </span>
               </div>
 
-              {/* Quantidade */}
-              <div className="flex items-center gap-3 mb-6">
-                <span className="text-gray-400 text-sm">Quantidade:</span>
-                <div className="flex items-center border border-white/10 rounded-lg overflow-hidden">
-                  <button
-                    className="px-4 py-2 text-white hover:bg-white/5 transition"
-                    onClick={() => setQuantidade(q => Math.max(1, q - 1))}
-                  >
-                    −
-                  </button>
-                  <span className="px-4 py-2 text-white text-sm font-semibold w-12 text-center">
-                    {quantidade}
-                  </span>
-                  <button
-                    className="px-4 py-2 text-white hover:bg-white/5 transition"
-                    onClick={() => setQuantidade(q => q + 1)}
-                  >
-                    +
-                  </button>
+              {/* Estoque */}
+              {esgotado ? (
+                <div className="mb-6 px-4 py-2.5 bg-red-500/10 border border-red-500/20 rounded-lg text-red-400 text-sm font-medium">
+                  Produto esgotado — em breve disponível novamente
                 </div>
-              </div>
+              ) : produto.estoque <= 5 ? (
+                <div className="mb-6 px-4 py-2.5 bg-yellow-500/10 border border-yellow-500/20 rounded-lg text-yellow-400 text-sm font-medium">
+                  Atenção: apenas {produto.estoque} unidade{produto.estoque > 1 ? 's' : ''} em estoque
+                </div>
+              ) : null}
+
+              {/* Quantidade */}
+              {!esgotado && (
+                <div className="flex items-center gap-3 mb-6">
+                  <span className="text-gray-400 text-sm">Quantidade:</span>
+                  <div className="flex items-center border border-white/10 rounded-lg overflow-hidden">
+                    <button
+                      className="px-4 py-2 text-white hover:bg-white/5 transition"
+                      onClick={() => setQuantidade(q => Math.max(1, q - 1))}
+                    >
+                      −
+                    </button>
+                    <span className="px-4 py-2 text-white text-sm font-semibold w-12 text-center">
+                      {quantidade}
+                    </span>
+                    <button
+                      className="px-4 py-2 text-white hover:bg-white/5 transition"
+                      onClick={() => setQuantidade(q => Math.min(produto.estoque, q + 1))}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Botão */}
               <button
                 onClick={handleAdicionarCarrinho}
+                disabled={esgotado}
                 className={`flex items-center justify-center gap-2 w-full py-3.5 rounded-xl font-semibold text-sm transition-all ${
-                  adicionado
+                  esgotado
+                    ? 'bg-gray-700 text-gray-500 cursor-not-allowed'
+                    : adicionado
                     ? 'bg-green-600 text-white'
                     : 'bg-primary hover:bg-primary/90 text-white'
                 }`}
               >
                 <ShoppingCart size={18} />
-                {adicionado ? 'Adicionado ao carrinho!' : 'Adicionar ao Carrinho'}
+                {esgotado ? 'Produto Esgotado' : adicionado ? 'Adicionado ao carrinho!' : 'Adicionar ao Carrinho'}
               </button>
 
               {/* Benefícios */}
@@ -129,6 +147,12 @@ export default function ProdutoDetalhePage({ produto, relacionados }: Props) {
                 <div className="flex items-center gap-2 text-sm text-gray-400">
                   <Package size={14} className="text-primary shrink-0" />
                   <span>Marca: <span className="text-white">Impulso Fit</span></span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-gray-400">
+                  <Package size={14} className="text-primary shrink-0" />
+                  <span>Disponibilidade: <span className={produto.estoque === 0 ? 'text-red-400' : 'text-green-400'}>
+                    {produto.estoque === 0 ? 'Esgotado' : `${produto.estoque} em estoque`}
+                  </span></span>
                 </div>
               </div>
             </div>

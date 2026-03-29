@@ -135,21 +135,41 @@ export async function criarPedido(params: {
     }
   }
 
-  const pedido = await prisma.pedido.create({
-    data: {
-      usuarioId: usuario.id,
-      total,
-      status: status ?? 'pago',
-      stripePaymentIntentId: stripePaymentIntentId ?? null,
-      produtos: {
-        create: Array.from(agregados.entries()).map(([produtoId, dados]) => ({
-          produtoId,
-          quantidade: dados.quantidade,
-          precoUnitario: dados.precoUnitario,
-        })),
+  // Verifica estoque antes de criar o pedido
+  for (const [produtoId, dados] of agregados) {
+    const produto = await prisma.produto.findUnique({ where: { id: produtoId }, select: { estoque: true, nome: true } });
+    if (!produto) throw new AppError(`Produto #${produtoId} não encontrado`, 404);
+    if (produto.estoque < dados.quantidade) {
+      throw new AppError(`Estoque insuficiente para "${produto.nome}" (disponível: ${produto.estoque})`, 400);
+    }
+  }
+
+  const pedido = await prisma.$transaction(async (tx) => {
+    const pedidoCriado = await tx.pedido.create({
+      data: {
+        usuarioId: usuario!.id,
+        total,
+        status: status ?? 'pago',
+        stripePaymentIntentId: stripePaymentIntentId ?? null,
+        produtos: {
+          create: Array.from(agregados.entries()).map(([produtoId, dados]) => ({
+            produtoId,
+            quantidade: dados.quantidade,
+            precoUnitario: dados.precoUnitario,
+          })),
+        },
       },
-    },
-    include: { produtos: { include: { produto: true } } },
+      include: { produtos: { include: { produto: true } } },
+    });
+
+    for (const [produtoId, dados] of agregados) {
+      await tx.produto.update({
+        where: { id: produtoId },
+        data: { estoque: { decrement: dados.quantidade } },
+      });
+    }
+
+    return pedidoCriado;
   });
 
   let emailEnviado = false;

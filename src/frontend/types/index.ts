@@ -6,6 +6,7 @@ export type Produto = {
   imagemUrl: string;
   categoriaId: number;
   peso?: number | null;
+  estoque: number;
   categoria?: { id: number; nome: string };
 };
 

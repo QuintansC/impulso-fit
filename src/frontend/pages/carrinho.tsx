@@ -33,6 +33,7 @@ export default function CarrinhoPage() {
                   imagemUrl: item.imagemUrl ?? '',
                   descricao: item.descricao ?? '',
                   categoriaId: 0,
+                  estoque: 0,
                 };
                 return (
                   <CartItem

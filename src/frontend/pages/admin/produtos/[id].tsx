@@ -10,7 +10,7 @@ import { Categoria } from '@/types';
 import * as produtosService from '@/lib/services/admin/produtosService';
 import * as categoriasService from '@/lib/services/admin/categoriasService';
 
-const FORM_VAZIO: ProdutoFormData = { nome: '', descricao: '', preco: '', imagemUrl: '', categoriaId: '', peso: '' };
+const FORM_VAZIO: ProdutoFormData = { nome: '', descricao: '', preco: '', imagemUrl: '', categoriaId: '', peso: '', estoque: '0' };
 
 export default function EditarProduto() {
   const router = useRouter();
@@ -35,6 +35,7 @@ export default function EditarProduto() {
         imagemUrl: produto.imagemUrl,
         categoriaId: String(produto.categoriaId),
         peso: produto.peso ? String(produto.peso) : '',
+        estoque: String(produto.estoque ?? 0),
       });
       setCategorias(cats);
     }).catch(() => setErro('Produto não encontrado.'))

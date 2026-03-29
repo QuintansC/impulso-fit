@@ -9,7 +9,7 @@ import { Categoria } from '@/types';
 import * as produtosService from '@/lib/services/admin/produtosService';
 import * as categoriasService from '@/lib/services/admin/categoriasService';
 
-const FORM_VAZIO: ProdutoFormData = { nome: '', descricao: '', preco: '', imagemUrl: '', categoriaId: '', peso: '' };
+const FORM_VAZIO: ProdutoFormData = { nome: '', descricao: '', preco: '', imagemUrl: '', categoriaId: '', peso: '', estoque: '0' };
 
 export default function NovoProduto() {
   const router = useRouter();

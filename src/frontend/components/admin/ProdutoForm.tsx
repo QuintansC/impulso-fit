@@ -8,6 +8,7 @@ export type ProdutoFormData = {
   imagemUrl: string;
   categoriaId: string;
   peso: string;
+  estoque: string;
 };
 
 type Props = {
@@ -49,6 +50,11 @@ export default function ProdutoForm({ form, categorias, erro, loading, submitLab
         <div>
           <label className="block text-xs font-medium text-gray-400 mb-1.5">Peso (g)</label>
           <input name="peso" value={form.peso} onChange={onChange} type="number" min="0" placeholder="Ex: 500" className={inputClass} />
+        </div>
+
+        <div>
+          <label className="block text-xs font-medium text-gray-400 mb-1.5">Estoque *</label>
+          <input name="estoque" value={form.estoque} onChange={onChange} required type="number" min="0" placeholder="0" className={inputClass} />
         </div>
 
         <div className="sm:col-span-2">

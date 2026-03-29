@@ -16,6 +16,7 @@ export default function DebugPage() {
       imagemUrl: '/cafe1.jpg',
       descricao: 'Café premium para teste',
       categoriaId: 1,
+      estoque: 10,
     };
     
     adicionarProdutoCompleto(produtoTeste, 2);

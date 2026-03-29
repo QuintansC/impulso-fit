@@ -27,7 +27,8 @@ model Produto {
   categoriaId Int
   criadoEm    DateTime  @default(now())
   pedidos     PedidoProduto[]
-  peso        Int?   
+  peso        Int?
+  estoque     Int       @default(0)
 }
 
 model Categoria {

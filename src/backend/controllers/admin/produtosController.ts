@@ -9,6 +9,7 @@ const criarSchema = z.object({
   imagemUrl: z.string().url('URL da imagem inválida'),
   categoriaId: z.coerce.number().int().positive(),
   peso: z.coerce.number().int().positive().nullish(),
+  estoque: z.coerce.number().int().min(0).default(0),
 });
 
 const atualizarSchema = criarSchema.partial();
@@ -35,6 +36,7 @@ export async function criar(req: Request, res: Response, next: NextFunction) {
     const produto = await produtosService.criar({
       ...dados,
       peso: dados.peso ?? null,
+      estoque: dados.estoque,
     });
     res.status(201).json(produto);
   } catch (err) {

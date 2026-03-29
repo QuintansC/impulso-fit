@@ -8,6 +8,7 @@ interface DadosProduto {
   imagemUrl: string;
   categoriaId: number;
   peso?: number | null;
+  estoque?: number;
 }
 
 export async function listar() {

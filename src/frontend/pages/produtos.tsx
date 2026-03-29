@@ -1,6 +1,7 @@
 import { useEffect, useState, useMemo } from 'react';
 import { Produto } from '@/types';
-import { getProdutos, getCategorias } from '@/lib/api';
+import { getProdutos } from '@/lib/services/produtosService';
+import { getCategorias } from '@/lib/services/categoriasService';
 import ProdutoCard from '@/components/ProdutoCard';
 import Head from 'next/head';
 import Header from '@/components/Header';

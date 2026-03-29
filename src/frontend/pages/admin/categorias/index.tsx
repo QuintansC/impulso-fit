@@ -2,10 +2,9 @@ import { useEffect, useState } from 'react';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import AdminLayout from '@/components/admin/AdminLayout';
 import Spinner from '@/components/admin/Spinner';
-import api from '@/lib/api';
 import { Plus, Pencil, Check, X } from 'lucide-react';
-
-type Categoria = { id: number; nome: string; produtos: any[]; subcategorias: any[] };
+import { Categoria } from '@/types';
+import * as categoriasService from '@/lib/services/admin/categoriasService';
 
 export default function AdminCategorias() {
   const [categorias, setCategorias] = useState<Categoria[]>([]);
@@ -16,7 +15,7 @@ export default function AdminCategorias() {
   const [editandoNome, setEditandoNome] = useState('');
 
   const carregar = () => {
-    api.get('/admin/categorias').then(res => setCategorias(res.data)).finally(() => setLoading(false));
+    categoriasService.getCategorias().then(setCategorias).finally(() => setLoading(false));
   };
 
   useEffect(() => { carregar(); }, []);
@@ -26,7 +25,7 @@ export default function AdminCategorias() {
     if (!novoNome.trim()) return;
     setCriando(true);
     try {
-      await api.post('/admin/categorias', { nome: novoNome.trim() });
+      await categoriasService.criarCategoria(novoNome.trim());
       setNovoNome('');
       carregar();
     } catch {
@@ -39,7 +38,7 @@ export default function AdminCategorias() {
   const handleEditar = async (id: number) => {
     if (!editandoNome.trim()) return;
     try {
-      await api.put(`/admin/categorias/${id}`, { nome: editandoNome.trim() });
+      await categoriasService.atualizarCategoria(id, editandoNome.trim());
       setCategorias(prev => prev.map(c => c.id === id ? { ...c, nome: editandoNome.trim() } : c));
       setEditandoId(null);
     } catch {
@@ -51,7 +50,6 @@ export default function AdminCategorias() {
     <ProtectedRoute requireAdmin>
       <AdminLayout title="Categorias">
         <div className="max-w-2xl space-y-6">
-          {/* Criar nova */}
           <div className="bg-dark-card border border-white/5 rounded-xl p-5">
             <h2 className="text-white font-semibold text-sm mb-4">Nova Categoria</h2>
             <form onSubmit={handleCriar} className="flex gap-3">
@@ -73,7 +71,6 @@ export default function AdminCategorias() {
             </form>
           </div>
 
-          {/* Lista */}
           <div className="bg-dark-card border border-white/5 rounded-xl overflow-hidden">
             {loading ? (
               <Spinner />

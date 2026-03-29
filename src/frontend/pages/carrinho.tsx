@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Produto } from '@/types';
 import CartItem from '@/components/CartItem';
-import { getProdutos } from '@/lib/api';
+import { getProdutos } from '@/lib/services/produtosService';
 import Link from 'next/link';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
@@ -15,7 +15,7 @@ export default function CarrinhoPage() {
     getProdutos().then(setProdutos);
   }, []); 
 
-  const getProduto = (id: string) => {
+  const getProduto = (id: number) => {
     return produtos.find(p => p.id === id);
   }
 

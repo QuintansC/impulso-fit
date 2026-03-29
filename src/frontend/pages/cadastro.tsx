@@ -1,8 +1,19 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { z } from 'zod';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import api from '@/lib/api';
+import * as authService from '@/lib/services/authService';
+
+const cadastroSchema = z.object({
+  nome: z.string().min(1, 'Nome é obrigatório'),
+  email: z.string().email('E-mail inválido'),
+  senha: z.string().min(6, 'A senha deve ter no mínimo 6 caracteres'),
+  confirmarSenha: z.string(),
+}).refine((d) => d.senha === d.confirmarSenha, {
+  message: 'As senhas não coincidem',
+  path: ['confirmarSenha'],
+});
 
 export default function CadastroPage() {
   const [nome, setNome] = useState('');
@@ -16,27 +27,19 @@ export default function CadastroPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nome || !email || !senha || !confirmarSenha) {
-      setErro('Preencha todos os campos.');
-      return;
-    }
-    if (senha !== confirmarSenha) {
-      setErro('As senhas não coincidem.');
-      return;
-    }
-    if (senha.length < 6) {
-      setErro('A senha deve ter no mínimo 6 caracteres.');
+    const resultado = cadastroSchema.safeParse({ nome, email, senha, confirmarSenha });
+    if (!resultado.success) {
+      setErro(resultado.error.issues[0].message);
       return;
     }
     setErro('');
     setLoading(true);
     try {
-      await api.post('/auth/register', { nome, email, senha });
+      await authService.register(nome, email, senha);
       setSucesso(true);
       setTimeout(() => router.push('/login'), 2000);
     } catch (err: any) {
-      const mensagem = err.response?.data?.erro || 'Erro ao criar conta. Tente novamente.';
-      setErro(mensagem);
+      setErro(err.response?.data?.erro || 'Erro ao criar conta. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -64,7 +67,6 @@ export default function CadastroPage() {
                   placeholder="Digite seu nome"
                   value={nome}
                   onChange={e => setNome(e.target.value)}
-                  required
                   disabled={loading}
                 />
               </label>
@@ -76,7 +78,6 @@ export default function CadastroPage() {
                   placeholder="Digite seu e-mail"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
-                  required
                   disabled={loading}
                 />
               </label>
@@ -88,7 +89,6 @@ export default function CadastroPage() {
                   placeholder="Mínimo 6 caracteres"
                   value={senha}
                   onChange={e => setSenha(e.target.value)}
-                  required
                   disabled={loading}
                 />
               </label>
@@ -100,7 +100,6 @@ export default function CadastroPage() {
                   placeholder="Repita a senha"
                   value={confirmarSenha}
                   onChange={e => setConfirmarSenha(e.target.value)}
-                  required
                   disabled={loading}
                 />
               </label>
@@ -117,10 +116,7 @@ export default function CadastroPage() {
 
           <div className="flex flex-col items-center mt-6 gap-2">
             <span className="text-white">Já tem conta?</span>
-            <a
-              href="/login"
-              className="text-sm text-white font-semibold hover:text-[#b71c1c] hover:underline"
-            >
+            <a href="/login" className="text-sm text-white font-semibold hover:text-[#b71c1c] hover:underline">
               Entrar
             </a>
           </div>

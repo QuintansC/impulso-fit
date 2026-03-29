@@ -4,9 +4,10 @@ import Link from 'next/link';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import AdminLayout from '@/components/admin/AdminLayout';
 import ProdutoForm, { ProdutoFormData } from '@/components/admin/ProdutoForm';
-import api from '@/lib/api';
 import { ArrowLeft } from 'lucide-react';
 import { Categoria } from '@/types';
+import * as produtosService from '@/lib/services/admin/produtosService';
+import * as categoriasService from '@/lib/services/admin/categoriasService';
 
 const FORM_VAZIO: ProdutoFormData = { nome: '', descricao: '', preco: '', imagemUrl: '', categoriaId: '', peso: '' };
 
@@ -18,7 +19,7 @@ export default function NovoProduto() {
   const [form, setForm] = useState<ProdutoFormData>(FORM_VAZIO);
 
   useEffect(() => {
-    api.get('/admin/categorias').then(res => setCategorias(res.data));
+    categoriasService.getCategorias().then(setCategorias);
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -30,7 +31,7 @@ export default function NovoProduto() {
     setErro('');
     setLoading(true);
     try {
-      await api.post('/admin/produtos', form);
+      await produtosService.criarProduto(form);
       router.push('/admin/produtos');
     } catch (err: any) {
       setErro(err.response?.data?.erro || 'Erro ao criar produto.');

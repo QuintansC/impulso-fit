@@ -2,9 +2,9 @@ import { useEffect, useMemo, useState } from 'react';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import AdminLayout from '@/components/admin/AdminLayout';
 import Spinner from '@/components/admin/Spinner';
-import api from '@/lib/api';
 import { PEDIDO_STATUS, PEDIDO_STATUS_COLORS } from '@/lib/constants';
 import { Pedido } from '@/types';
+import * as pedidosService from '@/lib/services/admin/pedidosService';
 
 export default function AdminPedidos() {
   const [pedidos, setPedidos] = useState<Pedido[]>([]);
@@ -13,13 +13,13 @@ export default function AdminPedidos() {
   const [filtroStatus, setFiltroStatus] = useState('');
 
   useEffect(() => {
-    api.get('/admin/pedidos').then(res => setPedidos(res.data)).finally(() => setLoading(false));
+    pedidosService.getPedidos().then(setPedidos).finally(() => setLoading(false));
   }, []);
 
   const handleStatus = async (id: number, status: string) => {
     setAtualizando(id);
     try {
-      await api.put(`/admin/pedidos/${id}/status`, { status });
+      await pedidosService.atualizarStatus(id, status);
       setPedidos(prev => prev.map(p => p.id === id ? { ...p, status } : p));
     } catch {
       alert('Erro ao atualizar status.');
@@ -30,14 +30,13 @@ export default function AdminPedidos() {
 
   const pedidosFiltrados = useMemo(
     () => filtroStatus ? pedidos.filter(p => p.status === filtroStatus) : pedidos,
-    [pedidos, filtroStatus]
+    [pedidos, filtroStatus],
   );
 
   return (
     <ProtectedRoute requireAdmin>
       <AdminLayout title="Pedidos">
         <div className="space-y-6">
-          {/* Filtro */}
           <div className="flex items-center gap-3">
             <span className="text-gray-400 text-sm">Filtrar por status:</span>
             <div className="flex flex-wrap gap-2">
@@ -59,7 +58,6 @@ export default function AdminPedidos() {
             </div>
           </div>
 
-          {/* Tabela */}
           <div className="bg-dark-card border border-white/5 rounded-xl overflow-hidden">
             {loading ? (
               <Spinner />

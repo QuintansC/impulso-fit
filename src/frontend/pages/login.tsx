@@ -1,8 +1,14 @@
 import { useState } from 'react';
 import { useRouter } from 'next/router';
+import { z } from 'zod';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import { useAuth } from '@/context/AuthContext';
+
+const loginSchema = z.object({
+  email: z.string().email('E-mail inválido'),
+  senha: z.string().min(1, 'Senha é obrigatória'),
+});
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -14,8 +20,9 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email || !senha) {
-      setErro('Preencha todos os campos.');
+    const resultado = loginSchema.safeParse({ email, senha });
+    if (!resultado.success) {
+      setErro(resultado.error.issues[0].message);
       return;
     }
     setErro('');
@@ -25,8 +32,7 @@ export default function LoginPage() {
       const redirect = (router.query.redirect as string) || '/';
       router.push(redirect);
     } catch (err: any) {
-      const mensagem = err.response?.data?.erro || 'Erro ao fazer login. Tente novamente.';
-      setErro(mensagem);
+      setErro(err.response?.data?.erro || 'Erro ao fazer login. Tente novamente.');
     } finally {
       setLoading(false);
     }
@@ -47,7 +53,6 @@ export default function LoginPage() {
                 placeholder="Digite seu e-mail"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                required
                 disabled={loading}
               />
             </label>
@@ -59,7 +64,6 @@ export default function LoginPage() {
                 placeholder="Digite sua senha"
                 value={senha}
                 onChange={e => setSenha(e.target.value)}
-                required
                 disabled={loading}
               />
             </label>
@@ -77,10 +81,7 @@ export default function LoginPage() {
               Esqueci minha senha
             </a>
             <span className="text-white">ou</span>
-            <a
-              href="/cadastro"
-              className="text-sm text-white font-semibold hover:text-[#b71c1c] hover:underline"
-            >
+            <a href="/cadastro" className="text-sm text-white font-semibold hover:text-[#b71c1c] hover:underline">
               Criar conta
             </a>
           </div>

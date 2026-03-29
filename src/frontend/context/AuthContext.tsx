@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import api from '@/lib/api';
 import { TOKEN_KEY, AUTH_UNAUTHORIZED_EVENT } from '@/lib/constants';
 import { Usuario } from '@/types';
+import * as authService from '@/lib/services/authService';
 
 type AuthContextType = {
   usuario: Usuario | null;
@@ -34,8 +34,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       return;
     }
     setToken(tokenSalvo);
-    api.get('/auth/me')
-      .then(({ data }) => setUsuario(data))
+    authService.getMe()
+      .then((data) => setUsuario(data))
       .catch(() => {
         localStorage.removeItem(TOKEN_KEY);
         setToken(null);
@@ -49,10 +49,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   const login = async (email: string, senha: string) => {
-    const { data } = await api.post('/auth/login', { email, senha });
-    localStorage.setItem(TOKEN_KEY, data.token);
-    setToken(data.token);
-    setUsuario(data.usuario);
+    const { token: novoToken, usuario: novoUsuario } = await authService.login(email, senha);
+    localStorage.setItem(TOKEN_KEY, novoToken);
+    setToken(novoToken);
+    setUsuario(novoUsuario);
   };
 
   return (

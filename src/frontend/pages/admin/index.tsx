@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import AdminLayout from '@/components/admin/AdminLayout';
 import Spinner from '@/components/admin/Spinner';
-import api from '@/lib/api';
 import { PEDIDO_STATUS_COLORS } from '@/lib/constants';
 import { Package, ShoppingBag, Users, DollarSign } from 'lucide-react';
 import { Pedido } from '@/types';
+import * as pedidosService from '@/lib/services/admin/pedidosService';
+import * as produtosAdminService from '@/lib/services/admin/produtosService';
+import * as usuariosService from '@/lib/services/admin/usuariosService';
 
 type Stats = {
   totalPedidos: number;
@@ -15,23 +17,21 @@ type Stats = {
   pedidosRecentes: Pedido[];
 };
 
-
 export default function AdminDashboard() {
   const [stats, setStats] = useState<Stats | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
-      api.get('/admin/pedidos'),
-      api.get('/admin/produtos'),
-      api.get('/admin/usuarios'),
-    ]).then(([pedidosRes, produtosRes, usuariosRes]) => {
-      const pedidos: Pedido[] = pedidosRes.data;
+      pedidosService.getPedidos(),
+      produtosAdminService.getProdutos(),
+      usuariosService.getUsuarios(),
+    ]).then(([pedidos, produtos, usuarios]) => {
       setStats({
         totalPedidos: pedidos.length,
         receita: pedidos.reduce((sum, p) => sum + p.total, 0),
-        totalProdutos: produtosRes.data.length,
-        totalUsuarios: usuariosRes.data.length,
+        totalProdutos: produtos.length,
+        totalUsuarios: usuarios.length,
         pedidosRecentes: pedidos.slice(0, 5),
       });
     }).finally(() => setLoading(false));
@@ -51,11 +51,10 @@ export default function AdminDashboard() {
           <Spinner className="h-64" />
         ) : stats ? (
           <div className="space-y-8">
-            {/* Cards de stats */}
             <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
               {cards.map(({ label, value, icon: Icon, color, bg }) => (
                 <div key={label} className={`rounded-xl border p-5 flex items-center gap-4 ${bg}`}>
-                  <div className={`p-3 rounded-lg bg-white/5`}>
+                  <div className="p-3 rounded-lg bg-white/5">
                     <Icon size={22} className={color} />
                   </div>
                   <div>
@@ -66,7 +65,6 @@ export default function AdminDashboard() {
               ))}
             </div>
 
-            {/* Pedidos recentes */}
             <div>
               <h2 className="text-white font-semibold text-base mb-4">Pedidos Recentes</h2>
               <div className="bg-dark-card border border-white/5 rounded-xl overflow-hidden">

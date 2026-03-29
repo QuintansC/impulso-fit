@@ -2,10 +2,10 @@ import { useEffect, useState } from 'react';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import AdminLayout from '@/components/admin/AdminLayout';
 import Spinner from '@/components/admin/Spinner';
-import api from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { Shield, User } from 'lucide-react';
 import { UsuarioAdmin } from '@/types';
+import * as usuariosService from '@/lib/services/admin/usuariosService';
 
 export default function AdminUsuarios() {
   const [usuarios, setUsuarios] = useState<UsuarioAdmin[]>([]);
@@ -14,16 +14,16 @@ export default function AdminUsuarios() {
   const { usuario: eu } = useAuth();
 
   useEffect(() => {
-    api.get('/admin/usuarios').then(res => setUsuarios(res.data)).finally(() => setLoading(false));
+    usuariosService.getUsuarios().then(setUsuarios).finally(() => setLoading(false));
   }, []);
 
   const handleToggleRole = async (id: number, roleAtual: string) => {
-    if (id === eu?.id) return; // não pode alterar a própria role
+    if (id === eu?.id) return;
     const novaRole = roleAtual === 'admin' ? 'cliente' : 'admin';
     if (!confirm(`Alterar "${roleAtual}" → "${novaRole}" para este usuário?`)) return;
     setAtualizando(id);
     try {
-      await api.put(`/admin/usuarios/${id}/role`, { role: novaRole });
+      await usuariosService.atualizarRole(id, novaRole);
       setUsuarios(prev => prev.map(u => u.id === id ? { ...u, role: novaRole } : u));
     } catch {
       alert('Erro ao atualizar role.');
@@ -70,9 +70,7 @@ export default function AdminUsuarios() {
                             </div>
                           </div>
                         </td>
-                        <td className="px-4 py-3 text-gray-400 hidden md:table-cell">
-                          {u._count.pedidos}
-                        </td>
+                        <td className="px-4 py-3 text-gray-400 hidden md:table-cell">{u._count.pedidos}</td>
                         <td className="px-4 py-3 text-gray-500 text-xs hidden lg:table-cell">
                           {new Date(u.criadoEm).toLocaleDateString('pt-BR')}
                         </td>

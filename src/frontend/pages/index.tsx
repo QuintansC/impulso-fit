@@ -2,7 +2,7 @@ import Head from 'next/head';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { Produto } from '@/types';
-import { getProdutos } from '@/lib/api';
+import { getProdutos } from '@/lib/services/produtosService';
 import ProdutoCard from '@/components/ProdutoCard';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';

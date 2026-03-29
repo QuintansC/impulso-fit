@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import Head from 'next/head';
 import { Produto } from '@/types';
-import { getProduto } from '@/lib/api';
+import { getProduto } from '@/lib/services/produtosService';
 import Footer from '@/components/Footer';
 import Header from '@/components/Header';
 import { useState } from 'react';

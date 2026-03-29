@@ -1,14 +1,8 @@
-// src/backend/routes/categorias.ts
+import { Router } from 'express';
+import * as categoriasController from '../controllers/categoriasController';
 
-import express from 'express';
-import { PrismaClient } from '@prisma/client';
+const router = Router();
 
-const router = express.Router();
-const prisma = new PrismaClient();
-
-router.get('/', async (req, res) => {
-    const categorias = await prisma.categoria.findMany({ include: { produtos: true } });
-    res.json(categorias);
-});
+router.get('/', categoriasController.listar);
 
 export default router;

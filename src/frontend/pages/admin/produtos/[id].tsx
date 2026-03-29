@@ -5,9 +5,10 @@ import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import AdminLayout from '@/components/admin/AdminLayout';
 import ProdutoForm, { ProdutoFormData } from '@/components/admin/ProdutoForm';
 import Spinner from '@/components/admin/Spinner';
-import api from '@/lib/api';
 import { ArrowLeft } from 'lucide-react';
 import { Categoria } from '@/types';
+import * as produtosService from '@/lib/services/admin/produtosService';
+import * as categoriasService from '@/lib/services/admin/categoriasService';
 
 const FORM_VAZIO: ProdutoFormData = { nome: '', descricao: '', preco: '', imagemUrl: '', categoriaId: '', peso: '' };
 
@@ -24,19 +25,18 @@ export default function EditarProduto() {
   useEffect(() => {
     if (!id) return;
     Promise.all([
-      api.get(`/admin/produtos/${id}`),
-      api.get('/admin/categorias'),
-    ]).then(([prodRes, catRes]) => {
-      const p = prodRes.data;
+      produtosService.getProduto(id as string),
+      categoriasService.getCategorias(),
+    ]).then(([produto, cats]) => {
       setForm({
-        nome: p.nome,
-        descricao: p.descricao,
-        preco: String(p.preco),
-        imagemUrl: p.imagemUrl,
-        categoriaId: String(p.categoriaId),
-        peso: p.peso ? String(p.peso) : '',
+        nome: produto.nome,
+        descricao: produto.descricao,
+        preco: String(produto.preco),
+        imagemUrl: produto.imagemUrl,
+        categoriaId: String(produto.categoriaId),
+        peso: produto.peso ? String(produto.peso) : '',
       });
-      setCategorias(catRes.data);
+      setCategorias(cats);
     }).catch(() => setErro('Produto não encontrado.'))
       .finally(() => setLoading(false));
   }, [id]);
@@ -50,7 +50,7 @@ export default function EditarProduto() {
     setErro('');
     setSalvando(true);
     try {
-      await api.put(`/admin/produtos/${id}`, form);
+      await produtosService.atualizarProduto(id as string, form);
       router.push('/admin/produtos');
     } catch (err: any) {
       setErro(err.response?.data?.erro || 'Erro ao salvar produto.');

@@ -3,20 +3,20 @@ import Link from 'next/link';
 import ProtectedRoute from '@/components/admin/ProtectedRoute';
 import AdminLayout from '@/components/admin/AdminLayout';
 import Spinner from '@/components/admin/Spinner';
-import api from '@/lib/api';
 import { Plus, Pencil, Trash2, Search } from 'lucide-react';
 import { Produto } from '@/types';
+import * as produtosService from '@/lib/services/admin/produtosService';
 
 export default function AdminProdutos() {
-  const [produtos, setProdutos] = useState<(Produto & { categoria?: { nome: string } })[]>([]);
+  const [produtos, setProdutos] = useState<Produto[]>([]);
   const [loading, setLoading] = useState(true);
   const [busca, setBusca] = useState('');
   const [deletando, setDeletando] = useState<number | null>(null);
 
   const carregar = () => {
     setLoading(true);
-    api.get('/admin/produtos')
-      .then(res => setProdutos(res.data))
+    produtosService.getProdutos()
+      .then(setProdutos)
       .finally(() => setLoading(false));
   };
 
@@ -26,8 +26,8 @@ export default function AdminProdutos() {
     if (!confirm(`Tem certeza que deseja excluir "${nome}"?`)) return;
     setDeletando(id);
     try {
-      await api.delete(`/admin/produtos/${id}`);
-      setProdutos(prev => prev.filter(p => Number(p.id) !== id));
+      await produtosService.deletarProduto(id);
+      setProdutos(prev => prev.filter(p => p.id !== id));
     } catch {
       alert('Erro ao excluir produto.');
     } finally {
@@ -40,14 +40,13 @@ export default function AdminProdutos() {
       p.nome.toLowerCase().includes(busca.toLowerCase()) ||
       p.categoria?.nome.toLowerCase().includes(busca.toLowerCase())
     ),
-    [produtos, busca]
+    [produtos, busca],
   );
 
   return (
     <ProtectedRoute requireAdmin>
       <AdminLayout title="Produtos">
         <div className="space-y-6">
-          {/* Toolbar */}
           <div className="flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between">
             <div className="relative w-full sm:w-72">
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
@@ -68,7 +67,6 @@ export default function AdminProdutos() {
             </Link>
           </div>
 
-          {/* Tabela */}
           <div className="bg-dark-card border border-white/5 rounded-xl overflow-hidden">
             {loading ? (
               <Spinner />
@@ -119,8 +117,8 @@ export default function AdminProdutos() {
                               <Pencil size={15} />
                             </Link>
                             <button
-                              onClick={() => handleDeletar(Number(produto.id), produto.nome)}
-                              disabled={deletando === Number(produto.id)}
+                              onClick={() => handleDeletar(produto.id, produto.nome)}
+                              disabled={deletando === produto.id}
                               className="p-2 rounded-lg bg-white/5 hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-colors disabled:opacity-50"
                               title="Excluir"
                             >

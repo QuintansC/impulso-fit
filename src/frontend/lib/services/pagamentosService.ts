@@ -6,8 +6,11 @@ interface ItemPedido {
   precoUnitario: number;
 }
 
-export async function criarPaymentIntent(amount: number): Promise<{ clientSecret: string; amount: number }> {
-  const { data } = await api.post('/pagamentos/create-payment-intent', { amount });
+export async function criarPaymentIntent(
+  amount: number,
+  metadata?: Record<string, string>,
+): Promise<{ clientSecret: string; amount: number }> {
+  const { data } = await api.post('/pagamentos/create-payment-intent', { amount, metadata });
   return data;
 }
 
@@ -18,6 +21,7 @@ export async function criarPedido(params: {
   clienteNome?: string;
   clienteEmail?: string;
   status?: string;
+  stripePaymentIntentId?: string;
 }) {
   const { data } = await api.post('/pagamentos/create-order', params);
   return data;

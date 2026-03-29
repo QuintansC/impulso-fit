@@ -1,6 +1,13 @@
+import Stripe from 'stripe';
 import bcrypt from 'bcryptjs';
 import prisma from '../lib/prisma';
 import { AppError } from '../errors/AppError';
+
+function getStripe() {
+  const key = process.env.STRIPE_SECRET_KEY;
+  if (!key) throw new AppError('Stripe não configurado', 500);
+  return new Stripe(key);
+}
 
 interface ItemPedido {
   produtoId: number;
@@ -8,11 +15,80 @@ interface ItemPedido {
   precoUnitario: number;
 }
 
-export async function criarPaymentIntent(amount: number) {
+export async function criarPaymentIntent(
+  amount: number,
+  metadata: Record<string, string> = {},
+) {
   if (amount <= 0) throw new AppError('Valor inválido');
-  // Placeholder — integrar Stripe aqui futuramente
-  const clientSecret = `pi_test_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-  return { clientSecret, amount };
+
+  const stripe = getStripe();
+  const paymentIntent = await stripe.paymentIntents.create({
+    amount: Math.round(amount), // centavos — o controller já converte
+    currency: 'brl',
+    metadata,
+  });
+
+  return { clientSecret: paymentIntent.client_secret!, amount };
+}
+
+export async function processarWebhook(payload: Buffer, signature: string) {
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  if (!webhookSecret) throw new AppError('Webhook secret não configurado', 500);
+
+  const stripe = getStripe();
+  let event: Stripe.Event;
+
+  try {
+    event = stripe.webhooks.constructEvent(payload, signature, webhookSecret);
+  } catch {
+    throw new AppError('Assinatura do webhook inválida', 400);
+  }
+
+  if (event.type === 'payment_intent.succeeded') {
+    const pi = event.data.object as Stripe.PaymentIntent;
+    await _criarPedidoSeNaoExiste(pi);
+  }
+
+  return { received: true };
+}
+
+async function _criarPedidoSeNaoExiste(pi: Stripe.PaymentIntent) {
+  // Idempotência — ignorar se o pedido já foi criado (ex: via frontend)
+  const existente = await prisma.pedido.findUnique({
+    where: { stripePaymentIntentId: pi.id },
+  });
+  if (existente) return;
+
+  const { usuarioId, clienteNome, clienteEmail, itens: itensJson } = pi.metadata ?? {};
+
+  if (!itensJson) return; // metadata insuficiente para criar pedido
+
+  let produtos: ItemPedido[];
+  try {
+    const raw = JSON.parse(itensJson) as Array<{
+      id: number;
+      quantidade: number;
+      preco: number;
+    }>;
+    produtos = raw.map(i => ({
+      produtoId: i.id,
+      quantidade: i.quantidade,
+      precoUnitario: i.preco,
+    }));
+  } catch {
+    return;
+  }
+
+  const total = pi.amount / 100;
+  await criarPedido({
+    usuarioId: parseInt(usuarioId ?? '0'),
+    produtos,
+    total,
+    clienteNome,
+    clienteEmail,
+    status: 'pago',
+    stripePaymentIntentId: pi.id,
+  });
 }
 
 export async function criarPedido(params: {
@@ -22,8 +98,9 @@ export async function criarPedido(params: {
   clienteNome?: string;
   clienteEmail?: string;
   status?: string;
+  stripePaymentIntentId?: string;
 }) {
-  const { usuarioId, produtos, total, clienteNome, clienteEmail, status } = params;
+  const { usuarioId, produtos, total, clienteNome, clienteEmail, status, stripePaymentIntentId } = params;
 
   let usuario = await prisma.usuario.findUnique({ where: { id: usuarioId } });
 
@@ -62,6 +139,7 @@ export async function criarPedido(params: {
       usuarioId: usuario.id,
       total,
       status: status ?? 'pago',
+      stripePaymentIntentId: stripePaymentIntentId ?? null,
       produtos: {
         create: Array.from(agregados.entries()).map(([produtoId, dados]) => ({
           produtoId,

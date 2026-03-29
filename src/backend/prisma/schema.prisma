@@ -45,13 +45,14 @@ model Subcategoria {
 }
 
 model Pedido {
-  id         Int       @id @default(autoincrement())
-  usuario    Usuario   @relation(fields: [usuarioId], references: [id])
-  usuarioId  Int
-  produtos   PedidoProduto[]
-  total      Float
-  status     String
-  criadoEm   DateTime  @default(now())
+  id                     Int       @id @default(autoincrement())
+  usuario                Usuario   @relation(fields: [usuarioId], references: [id])
+  usuarioId              Int
+  produtos               PedidoProduto[]
+  total                  Float
+  status                 String
+  stripePaymentIntentId  String?   @unique
+  criadoEm               DateTime  @default(now())
 }
 
 model PedidoProduto {
